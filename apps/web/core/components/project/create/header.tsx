@@ -46,8 +46,14 @@ function ProjectCreateHeader(props: Props) {
         className="absolute top-0 left-0 h-full w-full rounded-lg"
       />
       {isClosable && (
-        <div className="absolute top-2 right-2 p-2">
-          <button type="button" onClick={handleClose} tabIndex={getIndex("close")}>
+        <div className="absolute top-2 right-2">
+          <button
+            type="button"
+            className="grid size-8 place-items-center rounded-sm md:size-6"
+            onClick={handleClose}
+            tabIndex={getIndex("close")}
+            aria-label={t("common.close")}
+          >
             <CloseIcon className="h-5 w-5 text-on-color" />
           </button>
         </div>
