@@ -28,18 +28,21 @@ export const MultipleSelectEntityAction = observer(function MultipleSelectEntity
   if (selectionHelpers.isSelectionDisabled) return null;
 
   return (
-    <Checkbox
-      className={cn("size-3.5 !outline-none", className)}
-      iconClassName="size-3"
-      onClick={(e) => {
-        e.stopPropagation();
-        selectionHelpers.handleEntityClick(e, id, groupId);
-      }}
-      checked={isSelected}
-      data-entity-group-id={groupId}
-      data-entity-id={id}
-      disabled={disabled}
-      readOnly
-    />
+    <label className={cn("grid size-3.5 shrink-0 place-items-center", className)}>
+      <Checkbox
+        className="size-3.5 !outline-none"
+        iconClassName="size-3"
+        aria-label="Select work item"
+        onClick={(e) => {
+          e.stopPropagation();
+          selectionHelpers.handleEntityClick(e, id, groupId);
+        }}
+        checked={isSelected}
+        data-entity-group-id={groupId}
+        data-entity-id={id}
+        disabled={disabled}
+        readOnly
+      />
+    </label>
   );
 });
