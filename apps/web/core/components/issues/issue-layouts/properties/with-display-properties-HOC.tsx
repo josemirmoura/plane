@@ -32,7 +32,7 @@ export const WithDisplayPropertiesHOC = observer(function WithDisplayPropertiesH
   if (!renderProperty) return null;
 
   return (
-    <div className="contents [&>div]:min-h-8 [&_button]:min-h-8 [&_button]:min-w-8 md:[&>div]:min-h-0 md:[&_button]:min-h-0 md:[&_button]:min-w-0">
+    <div className="contents [&_button]:min-h-8 [&_button]:min-w-8 md:[&_button]:min-h-0 md:[&_button]:min-w-0 [&>div]:min-h-8 md:[&>div]:min-h-0">
       {children}
     </div>
   );
