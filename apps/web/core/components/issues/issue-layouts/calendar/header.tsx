@@ -101,20 +101,30 @@ export const CalendarHeader = observer(function CalendarHeader(props: ICalendarH
   };
 
   return (
-    <Row className="mb-4 flex items-center justify-between gap-2">
-      <div className="flex items-center gap-1.5">
-        <button type="button" className="grid place-items-center" onClick={handlePrevious}>
+    <Row className="mb-4 flex flex-wrap items-center justify-between gap-2">
+      <div className="flex min-w-0 items-center gap-1.5">
+        <button
+          type="button"
+          className="grid size-8 shrink-0 place-items-center rounded-sm md:size-6"
+          onClick={handlePrevious}
+          aria-label="Previous calendar period"
+        >
           <ChevronLeftIcon height={16} width={16} strokeWidth={2} />
         </button>
-        <button type="button" className="grid place-items-center" onClick={handleNext}>
+        <button
+          type="button"
+          className="grid size-8 shrink-0 place-items-center rounded-sm md:size-6"
+          onClick={handleNext}
+          aria-label="Next calendar period"
+        >
           <ChevronRightIcon height={16} width={16} strokeWidth={2} />
         </button>
         <CalendarMonthsDropdown issuesFilterStore={issuesFilterStore} />
       </div>
-      <div className="flex items-center gap-1.5">
+      <div className="ml-auto flex items-center gap-1.5">
         <button
           type="button"
-          className="rounded-sm bg-layer-transparent px-2.5 py-1 text-11 font-medium text-secondary hover:bg-layer-transparent-hover hover:text-primary"
+          className="min-h-8 rounded-sm bg-layer-transparent px-2.5 py-1 text-11 font-medium text-secondary hover:bg-layer-transparent-hover hover:text-primary md:min-h-6"
           onClick={handleToday}
         >
           {t("common.today")}
