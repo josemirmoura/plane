@@ -7,6 +7,7 @@
 import { observer } from "mobx-react";
 // icons
 import { ListFilter } from "lucide-react";
+import { useTranslation } from "@plane/i18n";
 import { ChevronDownIcon } from "@plane/propel/icons";
 // components
 import { Row } from "@plane/ui";
@@ -18,6 +19,7 @@ import { useMember } from "@/hooks/store/use-member";
 import { useProjectView } from "@/hooks/store/use-project-view";
 
 export const ViewMobileHeader = observer(function ViewMobileHeader() {
+  const { t } = useTranslation();
   // store hooks
   const { filters, updateFilters } = useProjectView();
   const {
@@ -25,40 +27,38 @@ export const ViewMobileHeader = observer(function ViewMobileHeader() {
   } = useMember();
 
   return (
-    <>
-      <div className="z-[13] flex justify-evenly border-b border-subtle bg-surface-1 py-2 md:hidden">
-        <Row className="flex flex-grow items-center justify-center border-l border-subtle text-13 text-secondary">
-          <ViewOrderByDropdown
-            sortBy={filters.sortBy}
-            sortKey={filters.sortKey}
-            onChange={(val) => {
-              if (val.key) updateFilters("sortKey", val.key);
-              if (val.order) updateFilters("sortBy", val.order);
-            }}
-            isMobile
+    <div className="z-[13] flex justify-evenly border-b border-subtle bg-surface-1 py-2 md:hidden">
+      <Row className="flex flex-grow items-center justify-center text-13 text-secondary">
+        <ViewOrderByDropdown
+          sortBy={filters.sortBy}
+          sortKey={filters.sortKey}
+          onChange={(val) => {
+            if (val.key) updateFilters("sortKey", val.key);
+            if (val.order) updateFilters("sortBy", val.order);
+          }}
+          isMobile
+        />
+      </Row>
+      <div className="flex flex-grow items-center justify-center border-l border-subtle text-13 text-secondary">
+        <FiltersDropdown
+          icon={<ListFilter className="h-3 w-3" />}
+          title={t("common.filters")}
+          placement="bottom-end"
+          isFiltersApplied={false}
+          menuButton={
+            <Row className="flex items-center text-13 text-secondary">
+              {t("common.filters")}
+              <ChevronDownIcon className="ml-2 h-4 w-4 text-secondary" strokeWidth={2} />
+            </Row>
+          }
+        >
+          <ViewFiltersSelection
+            filters={filters}
+            handleFiltersUpdate={updateFilters}
+            memberIds={projectMemberIds ?? undefined}
           />
-        </Row>
-        <div className="flex flex-grow items-center justify-center border-l border-subtle text-13 text-secondary">
-          <FiltersDropdown
-            icon={<ListFilter className="h-3 w-3" />}
-            title="Filters"
-            placement="bottom-end"
-            isFiltersApplied={false}
-            menuButton={
-              <Row className="flex items-center text-13 text-secondary">
-                Filters
-                <ChevronDownIcon className="ml-2 h-4 w-4 text-secondary" strokeWidth={2} />
-              </Row>
-            }
-          >
-            <ViewFiltersSelection
-              filters={filters}
-              handleFiltersUpdate={updateFilters}
-              memberIds={projectMemberIds ?? undefined}
-            />
-          </FiltersDropdown>
-        </div>
+        </FiltersDropdown>
       </div>
-    </>
+    </div>
   );
 });

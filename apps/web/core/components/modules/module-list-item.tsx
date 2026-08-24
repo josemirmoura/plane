@@ -92,8 +92,12 @@ export const ModuleListItem = observer(function ModuleListItem(props: Props) {
       }
       appendTitleElement={
         <button
+          type="button"
           onClick={openModuleOverview}
-          className={`z-[5] flex-shrink-0 ${isMobile ? "flex" : "hidden group-hover:flex"}`}
+          className={`z-[5] size-8 shrink-0 items-center justify-center rounded-sm md:size-6 ${
+            isMobile ? "flex" : "hidden group-hover:flex"
+          }`}
+          aria-label="Open module overview"
         >
           <Info className="h-4 w-4 text-placeholder" />
         </button>

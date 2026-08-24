@@ -76,11 +76,12 @@ export const CyclesViewHeader = observer(function CyclesViewHeader(props: Props)
   }, [searchQuery]);
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex min-w-0 items-center gap-2">
       {!isSearchOpen ? (
         <IconButton
           variant="ghost"
           size="lg"
+          aria-label={t("common.search.label")}
           onClick={() => {
             setIsSearchOpen(true);
             inputRef.current?.focus();
@@ -92,15 +93,15 @@ export const CyclesViewHeader = observer(function CyclesViewHeader(props: Props)
           className={cn(
             "ml-auto flex w-0 items-center justify-start gap-1 overflow-hidden rounded-md border border-transparent bg-surface-1 text-placeholder opacity-0 transition-[width] ease-linear",
             {
-              "w-64 border-subtle px-2.5 py-1.5 opacity-100": isSearchOpen,
+              "w-40 border-subtle py-1.5 pr-1 pl-2.5 opacity-100 md:w-64 md:pr-2.5": isSearchOpen,
             }
           )}
         >
-          <SearchIcon className="h-3.5 w-3.5" />
+          <SearchIcon className="h-3.5 w-3.5 shrink-0" />
           <input
             ref={inputRef}
-            className="w-full max-w-[234px] border-none bg-transparent text-13 text-primary placeholder:text-placeholder focus:outline-none"
-            placeholder="Search"
+            className="w-full max-w-[234px] min-w-0 border-none bg-transparent text-13 text-primary placeholder:text-placeholder focus:outline-none"
+            placeholder={t("common.search.label")}
             value={searchQuery}
             onChange={(e) => updateSearchQuery(e.target.value)}
             onKeyDown={handleInputKeyDown}
@@ -108,7 +109,8 @@ export const CyclesViewHeader = observer(function CyclesViewHeader(props: Props)
           {isSearchOpen && (
             <button
               type="button"
-              className="grid place-items-center"
+              className="grid size-8 shrink-0 place-items-center rounded-sm hover:bg-layer-1 md:size-5"
+              aria-label="Close search"
               onClick={() => {
                 updateSearchQuery("");
                 setIsSearchOpen(false);

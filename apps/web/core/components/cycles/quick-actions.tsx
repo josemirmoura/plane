@@ -10,7 +10,7 @@ import { MoreHorizontal } from "lucide-react";
 // ui
 import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
-import { IconButton } from "@plane/propel/icon-button";
+import { getIconButtonStyling } from "@plane/propel/icon-button";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import type { TContextMenuItem } from "@plane/ui";
 import { ContextMenu, CustomMenu } from "@plane/ui";
@@ -140,11 +140,12 @@ export const CycleQuickActions = observer(function CycleQuickActions(props: Prop
       )}
       <ContextMenu parentRef={parentRef} items={CONTEXT_MENU_ITEMS} />
       <CustomMenu
-        customButton={<IconButton variant="tertiary" size="lg" icon={MoreHorizontal} />}
+        ariaLabel="More cycle actions"
+        customButton={<MoreHorizontal className="size-4" />}
+        customButtonClassName={cn(getIconButtonStyling("tertiary", "xl"), "md:size-7", customClassName)}
         placement="bottom-end"
         closeOnSelect
         maxHeight="lg"
-        buttonClassName={customClassName}
       >
         {MENU_ITEMS.map((item) => {
           if (item.shouldRender === false) return null;

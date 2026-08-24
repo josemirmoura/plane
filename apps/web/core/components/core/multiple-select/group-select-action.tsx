@@ -22,17 +22,22 @@ export function MultipleSelectGroupAction(props: Props) {
   const { className, disabled = false, groupID, selectionHelpers } = props;
   // derived values
   const groupSelectionStatus = selectionHelpers.isGroupSelected(groupID);
+  const checkboxId = `select-work-item-group-${groupID}`;
 
   if (selectionHelpers.isSelectionDisabled) return null;
 
   return (
-    <Checkbox
-      className={cn("size-3.5 !outline-none", className)}
-      iconClassName="size-3"
-      onClick={() => selectionHelpers.handleGroupClick(groupID)}
-      checked={groupSelectionStatus === "complete"}
-      indeterminate={groupSelectionStatus === "partial"}
-      disabled={disabled}
-    />
+    <label htmlFor={checkboxId} className={cn("grid size-3.5 shrink-0 place-items-center", className)}>
+      <Checkbox
+        id={checkboxId}
+        className="size-3.5 !outline-none"
+        iconClassName="size-3"
+        aria-label="Select work item group"
+        onClick={() => selectionHelpers.handleGroupClick(groupID)}
+        checked={groupSelectionStatus === "complete"}
+        indeterminate={groupSelectionStatus === "partial"}
+        disabled={disabled}
+      />
+    </label>
   );
 }

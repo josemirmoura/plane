@@ -69,7 +69,7 @@ export const CalendarIssueBlock = observer(
       <div
         role="presentation"
         ref={menuActionRef}
-        className={`w-full cursor-pointer rounded-sm p-1 text-placeholder hover:bg-layer-1 ${
+        className={`grid size-8 cursor-pointer place-items-center rounded-sm text-placeholder hover:bg-layer-1 md:size-5 ${
           isMenuActive ? "bg-layer-1-active text-primary" : "text-secondary"
         }`}
         onClick={() => setIsMenuActive(!isMenuActive)}
@@ -124,7 +124,7 @@ export const CalendarIssueBlock = observer(
                     }
                   )}
                 >
-                  <div className="flex h-full items-center gap-1.5 truncate">
+                  <div className="flex h-full min-w-0 items-center gap-1.5 truncate">
                     <span
                       className="h-full w-0.5 flex-shrink-0 rounded-sm"
                       style={{
@@ -140,13 +140,13 @@ export const CalendarIssueBlock = observer(
                         displayProperties={issuesFilter?.issueFilters?.displayProperties}
                       />
                     )}
-                    <div className="truncate text-13 font-medium md:text-11 md:font-regular">{issue.name}</div>
+                    <div className="min-w-0 truncate text-13 font-medium md:text-11 md:font-regular">{issue.name}</div>
                   </div>
                   {/* Wrapper exists only to stop clicks reaching the ControlLink; the
                       quick-action menu inside carries its own interactive semantics. */}
                   <div
                     role="presentation"
-                    className={cn("size-5 flex-shrink-0", {
+                    className={cn("size-8 shrink-0 md:size-5", {
                       "hidden group-hover/calendar-block:block": !isMobile,
                       block: isMenuActive,
                     })}

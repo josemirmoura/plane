@@ -48,7 +48,7 @@ function LeftItem(props: HeaderProps) {
   return (
     <div
       className={cn(
-        "flex max-w-[80%] flex-grow flex-wrap items-center gap-2 overflow-ellipsis whitespace-nowrap",
+        "flex max-w-[80%] min-w-0 flex-grow flex-wrap items-center gap-2 overflow-ellipsis whitespace-nowrap",
         props.className
       )}
     >

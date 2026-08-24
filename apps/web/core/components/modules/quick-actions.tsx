@@ -9,7 +9,7 @@ import { observer } from "mobx-react";
 import { MoreHorizontal } from "lucide-react";
 // plane imports
 import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
-import { IconButton } from "@plane/propel/icon-button";
+import { getIconButtonStyling } from "@plane/propel/icon-button";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import type { TContextMenuItem } from "@plane/ui";
 import { ContextMenu, CustomMenu } from "@plane/ui";
@@ -135,10 +135,11 @@ export const ModuleQuickActions = observer(function ModuleQuickActions(props: Pr
       )}
       <ContextMenu parentRef={parentRef} items={CONTEXT_MENU_ITEMS} />
       <CustomMenu
-        customButton={<IconButton variant="tertiary" size="lg" icon={MoreHorizontal} />}
+        ariaLabel="More module actions"
+        customButton={<MoreHorizontal className="size-4" />}
+        customButtonClassName={cn(getIconButtonStyling("tertiary", "xl"), "md:size-7", customClassName)}
         placement="bottom-end"
         closeOnSelect
-        buttonClassName={customClassName}
       >
         {MENU_ITEMS.map((item) => {
           if (item.shouldRender === false) return null;

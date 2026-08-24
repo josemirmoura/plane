@@ -38,23 +38,21 @@ export const ProjectFeatureUpdate = observer(function ProjectFeatureUpdate(props
       <Row className="py-6">
         <ProjectFeaturesList workspaceSlug={workspaceSlug} projectId={projectId} isAdmin />
       </Row>
-      <div className="mt-4 flex items-center justify-between gap-2 border-t border-subtle px-6 py-4">
-        <div className="flex gap-1 text-13 font-medium text-tertiary">
+      <div className="mt-4 flex flex-col items-stretch gap-3 border-t border-subtle px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:gap-2">
+        <div className="flex min-w-0 flex-wrap items-center gap-1 text-13 font-medium text-tertiary">
           {t("congrats")}
-          <Logo logo={currentProjectDetails.logo_props} /> <p className="break-all">{currentProjectDetails.name}</p>{" "}
+          <Logo logo={currentProjectDetails.logo_props} />
+          <p className="min-w-0 break-words">{currentProjectDetails.name}</p>
           {t("created").toLowerCase()}.
         </div>
-        <div className="flex gap-2">
-          {/* eslint-disable-next-line jsx-a11y/tabindex-no-positive */}
-          <Button variant="secondary" size="lg" onClick={onClose} tabIndex={1}>
+        <div className="flex flex-wrap justify-end gap-2">
+          <Button variant="secondary" size="lg" onClick={onClose}>
             {t("close")}
           </Button>
           <Link
             href={`/${workspaceSlug}/projects/${projectId}/issues`}
             onClick={onClose}
             className={getButtonStyling("primary", "lg")}
-            // oxlint-disable-next-line jsx-a11y/tabindex-no-positive
-            tabIndex={2}
           >
             {t("open_project")}
           </Link>

@@ -24,22 +24,34 @@ export const MultipleSelectEntityAction = observer(function MultipleSelectEntity
   const { className, disabled = false, groupId, id, selectionHelpers } = props;
   // derived values
   const isSelected = selectionHelpers.getIsEntitySelected(id);
+  const checkboxId = `select-work-item-${groupId}-${id}`;
 
   if (selectionHelpers.isSelectionDisabled) return null;
 
   return (
-    <Checkbox
-      className={cn("size-3.5 !outline-none", className)}
-      iconClassName="size-3"
-      onClick={(e) => {
-        e.stopPropagation();
-        selectionHelpers.handleEntityClick(e, id, groupId);
-      }}
-      checked={isSelected}
-      data-entity-group-id={groupId}
-      data-entity-id={id}
-      disabled={disabled}
-      readOnly
-    />
+    <label
+      htmlFor={checkboxId}
+      className={cn(
+        "grid size-3.5 shrink-0 place-items-center",
+        disabled ? "cursor-not-allowed" : "cursor-pointer",
+        className
+      )}
+    >
+      <Checkbox
+        id={checkboxId}
+        className="size-3.5 !outline-none"
+        iconClassName="size-3"
+        aria-label="Select work item"
+        onClick={(e) => {
+          e.stopPropagation();
+          selectionHelpers.handleEntityClick(e, id, groupId);
+        }}
+        checked={isSelected}
+        data-entity-group-id={groupId}
+        data-entity-id={id}
+        disabled={disabled}
+        readOnly
+      />
+    </label>
   );
 });

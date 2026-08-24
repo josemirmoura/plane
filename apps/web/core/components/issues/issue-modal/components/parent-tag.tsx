@@ -9,6 +9,7 @@ import { observer } from "mobx-react";
 import type { Control } from "react-hook-form";
 import { Controller } from "react-hook-form";
 import { ETabIndices } from "@plane/constants";
+import { useTranslation } from "@plane/i18n";
 import { CloseIcon } from "@plane/propel/icons";
 // plane imports
 // types
@@ -31,6 +32,7 @@ export const IssueParentTag = observer(function IssueParentTag(props: TIssuePare
   const { control, selectedParentIssue, handleFormChange, setSelectedParentIssue } = props;
   // store hooks
   const { isMobile } = usePlatformOS();
+  const { t } = useTranslation();
 
   const { getIndex } = getTabIndex(ETabIndices.ISSUE_FORM, isMobile);
 
@@ -39,15 +41,15 @@ export const IssueParentTag = observer(function IssueParentTag(props: TIssuePare
       control={control}
       name="parent_id"
       render={({ field: { onChange } }) => (
-        <div className="flex w-min items-center gap-2 rounded-sm bg-surface-2 p-2 text-caption-sm-regular whitespace-nowrap">
-          <div className="flex items-center gap-2">
+        <div className="flex w-full min-w-0 items-center gap-2 rounded-sm bg-surface-2 p-2 text-caption-sm-regular sm:w-fit sm:max-w-full">
+          <div className="flex min-w-0 flex-1 items-center gap-2">
             <span
-              className="block h-1.5 w-1.5 rounded-full"
+              className="block h-1.5 w-1.5 shrink-0 rounded-full"
               style={{
                 backgroundColor: selectedParentIssue.state__color,
               }}
             />
-            <span className="flex-shrink-0 text-secondary">
+            <span className="shrink-0 text-secondary">
               {selectedParentIssue?.project_id && (
                 <IssueIdentifier
                   projectId={selectedParentIssue.project_id}
@@ -58,16 +60,17 @@ export const IssueParentTag = observer(function IssueParentTag(props: TIssuePare
                 />
               )}
             </span>
-            <span className="truncate font-medium">{selectedParentIssue.name.substring(0, 50)}</span>
+            <span className="min-w-0 flex-1 truncate font-medium">{selectedParentIssue.name.substring(0, 50)}</span>
             <button
               type="button"
-              className="grid place-items-center"
+              className="grid size-8 shrink-0 place-items-center rounded-sm md:size-6"
               onClick={() => {
                 onChange(null);
                 handleFormChange();
                 setSelectedParentIssue(null);
               }}
               tabIndex={getIndex("remove_parent")}
+              aria-label={t("remove_parent_issue")}
             >
               <CloseIcon className="h-3 w-3 cursor-pointer" />
             </button>

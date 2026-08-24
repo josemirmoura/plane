@@ -66,32 +66,32 @@ export function ListItem(props: IListItemProps) {
   };
 
   return (
-    <div ref={parentRef} className="relative">
+    <div ref={parentRef} className="relative min-w-0">
       <Row
         className={cn(
-          "group flex min-h-[52px] w-full flex-col items-center justify-between gap-3 border-b border-subtle bg-layer-transparent py-4 text-13 hover:bg-layer-transparent-hover",
+          "group flex min-h-[52px] w-full min-w-0 flex-col items-center justify-between gap-3 border-b border-subtle bg-layer-transparent py-4 text-13 hover:bg-layer-transparent-hover",
           { "xl:flex-row xl:gap-5 xl:py-0": isSidebarOpen, "lg:flex-row lg:gap-5 lg:py-0": !isSidebarOpen },
           className
         )}
       >
-        <div className={cn("relative flex w-full items-center justify-between gap-3 truncate", itemClassName)}>
+        <div className={cn("relative flex w-full min-w-0 items-center justify-between gap-3", itemClassName)}>
           <ControlLink
             id={id}
-            className="relative flex w-full items-center gap-3 overflow-hidden"
+            className="relative flex min-w-0 flex-1 items-center gap-3 overflow-hidden"
             href={itemLink}
             target="_self"
             onClick={handleControlLinkClick}
             disabled={disableLink}
             data-prevent-progress={preventDefaultProgress}
           >
-            <div className={cn("flex items-center gap-4 truncate", leftElementClassName)}>
-              {prependTitleElement && <span className="flex flex-shrink-0 items-center">{prependTitleElement}</span>}
+            <div className={cn("flex min-w-0 flex-1 items-center gap-4", leftElementClassName)}>
+              {prependTitleElement && <span className="flex shrink-0 items-center">{prependTitleElement}</span>}
               <Tooltip tooltipContent={title} position="top" isMobile={isMobile}>
-                <span className="truncate text-13">{title}</span>
+                <span className="min-w-0 truncate text-13">{title}</span>
               </Tooltip>
             </div>
             {appendTitleElement && (
-              <span className={cn("flex flex-shrink-0 items-center", rightElementClassName)}>{appendTitleElement}</span>
+              <span className={cn("flex shrink-0 items-center", rightElementClassName)}>{appendTitleElement}</span>
             )}
           </ControlLink>
           {quickActionElement && quickActionElement}
@@ -99,10 +99,10 @@ export function ListItem(props: IListItemProps) {
         {actionableItems && (
           <div
             className={cn(
-              "relative flex w-full flex-shrink-0 flex-wrap items-center justify-start gap-4",
+              "relative flex w-full shrink-0 flex-wrap items-center justify-start gap-4",
               {
-                "xl:w-auto xl:flex-shrink-0 xl:flex-nowrap": isSidebarOpen,
-                "lg:w-auto lg:flex-shrink-0 lg:flex-nowrap": !isSidebarOpen,
+                "xl:w-auto xl:shrink-0 xl:flex-nowrap": isSidebarOpen,
+                "lg:w-auto lg:shrink-0 lg:flex-nowrap": !isSidebarOpen,
               },
               actionItemContainerClassName
             )}

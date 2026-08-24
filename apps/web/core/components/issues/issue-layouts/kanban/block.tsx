@@ -65,23 +65,23 @@ interface IssueDetailsBlockProps {
 const KanbanIssueDetailsBlock = observer(function KanbanIssueDetailsBlock(props: IssueDetailsBlockProps) {
   const { cardRef, issue, updateIssue, quickActions, isReadOnly, displayProperties, isEpic = false } = props;
   // refs
-  const menuActionRef = useRef<HTMLDivElement | null>(null);
+  const menuActionRef = useRef<HTMLSpanElement | null>(null);
   // states
   const [isMenuActive, setIsMenuActive] = useState(false);
   // hooks
   const { isMobile } = usePlatformOS();
 
   const customActionButton = (
-    // oxlint-disable-next-line jsx_a11y/click-events-have-key-events oxlint-disable-next-line jsx_a11y/no-static-element-interactions
-    <div
+    <span
       ref={menuActionRef}
-      className={`flex h-full w-full cursor-pointer items-center rounded-sm p-1 text-placeholder hover:bg-layer-1 ${
+      className={cn(
+        "flex size-8 cursor-pointer items-center justify-center rounded-sm text-placeholder hover:bg-layer-1 md:size-6",
         isMenuActive ? "bg-layer-1 text-primary" : "text-secondary"
-      }`}
+      )}
       onClick={() => setIsMenuActive(!isMenuActive)}
     >
       <MoreHorizontal className="h-3.5 w-3.5" />
-    </div>
+    </span>
   );
 
   // oxlint-disable-next-line unicorn/consistent-function-scoping
@@ -121,7 +121,7 @@ const KanbanIssueDetailsBlock = observer(function KanbanIssueDetailsBlock(props:
       </div>
 
       <Tooltip tooltipContent={issue.name} isMobile={isMobile} renderByDefault={false}>
-        <div className="line-clamp-1 w-full text-body-sm-medium text-primary">
+        <div className="line-clamp-2 w-full text-body-sm-medium text-primary md:line-clamp-1">
           <span>{issue.name}</span>
         </div>
       </Tooltip>

@@ -10,6 +10,7 @@ import { useParams, useRouter } from "next/navigation";
 import { PanelRight } from "lucide-react";
 import { PROFILE_VIEWER_TAB, PROFILE_ADMINS_TAB, EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
 import { useTranslation } from "@plane/i18n";
+import { IconButton } from "@plane/propel/icon-button";
 import { YourWorkIcon, ChevronDownIcon } from "@plane/propel/icons";
 import type { IUserProfileProjectSegregation } from "@plane/types";
 import { Breadcrumbs, Header, CustomMenu } from "@plane/ui";
@@ -19,7 +20,6 @@ import { ProfileIssuesFilter } from "@/components/profile/profile-issues-filter"
 // hooks
 import { useAppTheme } from "@/hooks/store/use-app-theme";
 import { useUser, useUserPermissions } from "@/hooks/store/user";
-import { Button } from "@plane/propel/button";
 
 type TUserProfileHeader = {
   userProjectsData: IUserProfileProjectSegregation | undefined;
@@ -96,16 +96,15 @@ export const UserProfileHeader = observer(function UserProfileHeader(props: TUse
             ))}
           </CustomMenu>
           <div className="shrink-0 md:hidden">
-            <Button
+            <IconButton
               variant="ghost"
               size="lg"
-              onClick={() => {
-                toggleProfileSidebar();
-              }}
-              appendIcon={
-                <PanelRight className={!profileSidebarCollapsed ? "text-accent-primary" : "text-secondary"} />
-              }
-            ></Button>
+              icon={PanelRight}
+              iconClassName={!profileSidebarCollapsed ? "text-accent-primary" : "text-secondary"}
+              aria-label="Toggle profile sidebar"
+              aria-pressed={!profileSidebarCollapsed}
+              onClick={() => toggleProfileSidebar()}
+            />
           </div>
         </div>
       </Header.RightItem>

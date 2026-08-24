@@ -28,66 +28,54 @@ export function BreadcrumbItemLoader() {
 }
 
 function Breadcrumbs({ className, children, onBack, isLoading = false }: BreadcrumbsProps) {
-  const [isSmallScreen, setIsSmallScreen] = React.useState(false);
-
-  React.useEffect(() => {
-    const handleResize = () => {
-      setIsSmallScreen(window.innerWidth <= 640); // Adjust this value as per your requirement
-    };
-
-    window.addEventListener("resize", handleResize);
-    handleResize(); // Call it initially to set the correct state
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
   const childrenArray = React.Children.toArray(children);
+  const lastChild = childrenArray[childrenArray.length - 1];
 
   return (
-    <div className={cn("flex flex-grow items-center gap-0.5 overflow-hidden", className)}>
-      {!isSmallScreen && (
-        <>
-          {childrenArray.map((child, index) => {
-            if (isLoading) {
-              return (
-                <>
-                  <BreadcrumbItemLoader />
-                </>
-              );
-            }
-            if (React.isValidElement<BreadcrumbItemProps>(child)) {
-              return React.cloneElement(child, {
-                isLast: index === childrenArray.length - 1,
-              });
-            }
-            return child;
-          })}
-        </>
-      )}
+    <div className={cn("flex min-w-0 flex-grow items-center gap-0.5 overflow-hidden", className)}>
+      <div className="hidden min-w-0 flex-grow items-center gap-0.5 sm:flex">
+        {childrenArray.map((child, index) => {
+          if (isLoading) return <BreadcrumbItemLoader key={`breadcrumb-loader-${index}`} />;
+          if (React.isValidElement<BreadcrumbItemProps>(child)) {
+            return React.cloneElement(child, {
+              isLast: index === childrenArray.length - 1,
+            });
+          }
+          return child;
+        })}
+      </div>
 
-      {isSmallScreen && childrenArray.length > 1 && (
-        <>
-          <div className="flex items-center gap-2.5 p-1">
+      <div className="flex min-w-0 flex-grow items-center sm:hidden">
+        {childrenArray.length > 1 && (
+          <>
             {onBack && (
-              <span onClick={onBack} className="text-secondary">
-                ...
-              </span>
+              <div className="flex shrink-0 items-center gap-1 p-1">
+                <button
+                  type="button"
+                  onClick={onBack}
+                  className="grid size-8 place-items-center text-secondary"
+                  aria-label="Go back"
+                >
+                  ...
+                </button>
+                <ChevronRightIcon className="h-3.5 w-3.5 flex-shrink-0 text-placeholder" aria-hidden="true" />
+              </div>
             )}
-            <ChevronRightIcon className="h-3.5 w-3.5 flex-shrink-0 text-placeholder" aria-hidden="true" />
-          </div>
-          <div className="flex items-center gap-2.5 p-1">
-            {isLoading ? (
-              <BreadcrumbItemLoader />
-            ) : React.isValidElement(childrenArray[childrenArray.length - 1]) ? (
-              React.cloneElement(childrenArray[childrenArray.length - 1] as React.ReactElement, {
-                isLast: true,
-              })
-            ) : (
-              childrenArray[childrenArray.length - 1]
-            )}
-          </div>
-        </>
-      )}
-      {isSmallScreen && childrenArray.length === 1 && childrenArray}
+            <div className="flex min-w-0 items-center gap-2.5 p-1">
+              {isLoading ? (
+                <BreadcrumbItemLoader />
+              ) : React.isValidElement(lastChild) ? (
+                React.cloneElement(lastChild as React.ReactElement, {
+                  isLast: true,
+                })
+              ) : (
+                lastChild
+              )}
+            </div>
+          </>
+        )}
+        {childrenArray.length === 1 && childrenArray}
+      </div>
     </div>
   );
 }
@@ -102,7 +90,7 @@ type BreadcrumbItemProps = {
 function BreadcrumbItem(props: BreadcrumbItemProps) {
   const { component, showSeparator = true, isLast = false } = props;
   return (
-    <div className="flex h-6 items-center gap-0.5">
+    <div className="flex h-6 min-w-0 items-center gap-0.5">
       {component}
       {showSeparator && !isLast && <BreadcrumbSeparator />}
     </div>
@@ -176,7 +164,7 @@ function BreadcrumbItemWrapper(props: BreadcrumbItemWrapperProps) {
     <Tooltip tooltipContent={label} position="bottom" disabled={!label || label === "" || disableTooltip}>
       <div
         className={cn(
-          "group flex h-full cursor-default items-center gap-2 rounded-sm px-1.5 py-1 text-13 font-medium",
+          "group flex h-full min-w-0 cursor-default items-center gap-2 rounded-sm px-1.5 py-1 text-13 font-medium",
           {
             "text-primary": isLast,
             "text-tertiary": !isLast,

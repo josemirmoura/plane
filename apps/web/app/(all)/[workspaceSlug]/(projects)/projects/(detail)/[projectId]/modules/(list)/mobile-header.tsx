@@ -19,26 +19,28 @@ export const ModulesListMobileHeader = observer(function ModulesListMobileHeader
   const { t } = useTranslation();
 
   return (
-    <div className="flex justify-start md:hidden">
+    <div className="flex justify-start sm:hidden">
       <CustomMenu
         maxHeight={"md"}
         className="flex flex-grow justify-start border-b border-subtle bg-surface-1 py-2 text-13 text-secondary"
-        // placement="bottom-start"
+        placement="bottom-start"
         customButton={
           <Row className="flex flex-grow justify-center gap-2 text-13 text-secondary">
-            <span>Layout</span> <ChevronDownIcon className="my-auto h-4 w-4 text-secondary" strokeWidth={1} />
+            <span>{t("common.layout")}</span>
+            <ChevronDownIcon className="my-auto h-4 w-4 text-secondary" strokeWidth={1} />
           </Row>
         }
         customButtonClassName="flex flex-grow justify-center items-center text-secondary text-13"
         closeOnSelect
       >
         {MODULE_VIEW_LAYOUTS.map((layout) => {
-          if (layout.key == "gantt") return;
+          if (layout.key === "gantt") return;
           return (
             <CustomMenu.MenuItem
               key={layout.key}
               onClick={() => {
-                updateDisplayFilters(currentProjectDetails!.id.toString(), { layout: layout.key });
+                if (!currentProjectDetails?.id) return;
+                updateDisplayFilters(currentProjectDetails.id.toString(), { layout: layout.key });
               }}
               className="flex items-center gap-2"
             >

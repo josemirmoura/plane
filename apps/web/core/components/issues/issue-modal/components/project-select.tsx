@@ -42,7 +42,7 @@ export const IssueProjectSelect = observer(function IssueProjectSelect(props: TI
         required: true,
       }}
       render={({ field: { value, onChange } }) => (
-        <div className="h-7">
+        <div className="h-8 md:h-7">
           <ProjectDropdown
             value={value}
             onChange={(projectId) => {

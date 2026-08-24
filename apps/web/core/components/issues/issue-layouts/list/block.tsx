@@ -217,12 +217,12 @@ export const IssueBlock = observer(function IssueBlock(props: IssueBlockProps) {
                   }
                   disabled={issue.project_id === projectId}
                 >
-                  <div className="absolute left-1 grid w-3.5 flex-shrink-0 place-items-center">
+                  <div className="relative grid size-8 flex-shrink-0 place-items-center lg:absolute lg:left-1 lg:size-auto lg:w-3.5">
                     <MultipleSelectEntityAction
                       className={cn(
-                        "pointer-events-none opacity-0 transition-opacity group-hover/list-block:pointer-events-auto group-hover/list-block:opacity-100",
+                        "pointer-events-auto size-8 opacity-100 transition-opacity lg:pointer-events-none lg:size-3.5 lg:opacity-0 lg:group-hover/list-block:pointer-events-auto lg:group-hover/list-block:opacity-100",
                         {
-                          "pointer-events-auto opacity-100": isIssueSelected,
+                          "lg:pointer-events-auto lg:opacity-100": isIssueSelected,
                         }
                       )}
                       groupId={groupId}
@@ -248,11 +248,12 @@ export const IssueBlock = observer(function IssueBlock(props: IssueBlockProps) {
               )}
 
               {/* sub-issues chevron */}
-              <div className="grid size-4 flex-shrink-0 place-items-center">
+              <div className="grid size-8 flex-shrink-0 place-items-center lg:size-4">
                 {subIssuesCount > 0 && !isEpic && (
                   <button
                     type="button"
-                    className="grid size-4 place-items-center rounded-xs text-placeholder hover:text-tertiary"
+                    className="grid size-8 place-items-center rounded-xs text-placeholder hover:text-tertiary lg:size-4"
+                    aria-label={isExpanded ? "Collapse sub-work-items" : "Expand sub-work-items"}
                     onClick={handleToggleExpand}
                   >
                     <ChevronRightIcon
@@ -294,11 +295,16 @@ export const IssueBlock = observer(function IssueBlock(props: IssueBlockProps) {
             </div>
           )}
         </div>
-        <div className="flex flex-shrink-0 items-center gap-2">
+        <div
+          className={cn("flex w-full min-w-0 items-center gap-2", {
+            "md:w-auto md:flex-shrink-0": isSidebarCollapsed,
+            "lg:w-auto lg:flex-shrink-0": !isSidebarCollapsed,
+          })}
+        >
           {!issue?.tempId ? (
             <>
               <IssueProperties
-                className={`relative flex flex-wrap ${isSidebarCollapsed ? "md:flex-shrink-0 md:flex-grow" : "lg:flex-shrink-0 lg:flex-grow"} items-center gap-2 whitespace-nowrap`}
+                className={`relative flex max-w-full min-w-0 flex-wrap ${isSidebarCollapsed ? "md:flex-shrink-0 md:flex-grow" : "lg:flex-shrink-0 lg:flex-grow"} items-center gap-2 whitespace-nowrap`}
                 issue={issue}
                 isReadOnly={!canEditIssueProperties}
                 updateIssue={updateIssue}

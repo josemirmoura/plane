@@ -20,7 +20,6 @@ import emptyIssueLight from "@/app/assets/empty-state/search/issues-light.webp?u
 import { EmptyState } from "@/components/common/empty-state";
 import { PageHead } from "@/components/core/page-title";
 // hooks
-import { useAppTheme } from "@/hooks/store/use-app-theme";
 import { useIssueDetail } from "@/hooks/store/use-issue-detail";
 import { useProject } from "@/hooks/store/use-project";
 import { useAppRouter } from "@/hooks/use-app-router";
@@ -45,7 +44,6 @@ export const IssueDetailsPage = observer(function IssueDetailsPage({ params }: R
     issue: { getIssueById },
   } = useIssueDetail();
   const { getProjectById, getProjectByIdentifier } = useProject();
-  const { toggleIssueDetailSidebar, issueDetailSidebarCollapsed } = useAppTheme();
 
   const [projectIdentifier, sequence_id] = workItem.split("-");
 
@@ -72,20 +70,6 @@ export const IssueDetailsPage = observer(function IssueDetailsPage({ params }: R
   );
 
   useEffect(() => {
-    const handleToggleIssueDetailSidebar = () => {
-      if (window && window.innerWidth < 768) {
-        toggleIssueDetailSidebar(true);
-      }
-      if (window && issueDetailSidebarCollapsed && window.innerWidth >= 768) {
-        toggleIssueDetailSidebar(false);
-      }
-    };
-    window.addEventListener("resize", handleToggleIssueDetailSidebar);
-    handleToggleIssueDetailSidebar();
-    return () => window.removeEventListener("resize", handleToggleIssueDetailSidebar);
-  }, [issueDetailSidebarCollapsed, toggleIssueDetailSidebar]);
-
-  useEffect(() => {
     if (data?.is_intake) {
       router.push(`/${workspaceSlug}/projects/${data.project_id}/intake/?currentTab=open&inboxIssueId=${data?.id}`);
     }
@@ -107,14 +91,14 @@ export const IssueDetailsPage = observer(function IssueDetailsPage({ params }: R
 
   if (issueLoader) {
     return (
-      <Loader className="flex h-full gap-5 p-5">
-        <div className="basis-2/3 space-y-2">
+      <Loader className="flex h-full flex-col gap-5 p-4 sm:p-5 md:flex-row">
+        <div className="w-full space-y-2 md:basis-2/3">
           <Loader.Item height="30px" width="40%" />
           <Loader.Item height="15px" width="60%" />
           <Loader.Item height="15px" width="60%" />
           <Loader.Item height="15px" width="40%" />
         </div>
-        <div className="basis-1/3 space-y-3">
+        <div className="hidden basis-1/3 space-y-3 md:block">
           <Loader.Item height="30px" />
           <Loader.Item height="30px" />
           <Loader.Item height="30px" />
