@@ -66,3 +66,59 @@ jobs:
 
       - name: Build affected workspaces
         run: pnpm turbo run build --affected
+
+  storybook-mobile-screenshots:
+    name: Storybook mobile screenshots
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    continue-on-error: true
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22.18.0"
+
+      - name: Enable Corepack and pnpm
+        run: corepack enable pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build UI Storybook
+        run: pnpm --filter @plane/ui build-storybook
+
+      - name: Install Chromium
+        run: pnpm dlx playwright@1.55.0 install --with-deps chromium
+
+      - name: Start Storybook static server
+        run: |
+          python3 -m http.server 6006 --directory packages/ui/storybook-static > /tmp/storybook.log 2>&1 &
+          for i in {1..30}; do
+            if curl --fail --silent http://127.0.0.1:6006/ > /dev/null; then
+              exit 0
+            fi
+            sleep 1
+          done
+          cat /tmp/storybook.log
+          exit 1
+
+      - name: Capture responsive Breadcrumbs screenshots
+        run: |
+          mkdir -p mobile-screenshots
+          STORY_URL='http://127.0.0.1:6006/iframe.html?id=ui-breadcrumbs--default&viewMode=story'
+          pnpm dlx playwright@1.55.0 screenshot --viewport-size='360,800' --full-page "$STORY_URL" mobile-screenshots/breadcrumbs-360.png
+          pnpm dlx playwright@1.55.0 screenshot --viewport-size='390,844' --full-page "$STORY_URL" mobile-screenshots/breadcrumbs-390.png
+          pnpm dlx playwright@1.55.0 screenshot --viewport-size='412,915' --full-page "$STORY_URL" mobile-screenshots/breadcrumbs-412.png
+          pnpm dlx playwright@1.55.0 screenshot --viewport-size='768,1024' --full-page "$STORY_URL" mobile-screenshots/breadcrumbs-768.png
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: mobile-ui-screenshots
+          path: mobile-screenshots/*.png
+          if-no-files-found: error
