@@ -1,0 +1,67 @@
+name: Mobile web validation
+
+on:
+  push:
+    branches:
+      - plane-mobile-web
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobile-web-validation-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-web:
+    name: format, lint, types, build
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NODE_OPTIONS: "--max-old-space-size=4096"
+      TURBO_SCM_BASE: origin/preview
+      TURBO_SCM_HEAD: HEAD
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Fetch preview base
+        run: git fetch origin preview:refs/remotes/origin/preview
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22.18.0"
+
+      - name: Enable Corepack and pnpm
+        run: corepack enable pnpm
+
+      - name: Get pnpm store directory
+        shell: bash
+        run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Cache pnpm store
+        uses: actions/cache@v5
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: mobile-web-pnpm-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            mobile-web-pnpm-${{ runner.os }}-
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check formatting of affected workspaces
+        run: pnpm turbo run check:format --affected
+
+      - name: Lint affected workspaces
+        run: pnpm turbo run check:lint --affected
+
+      - name: Type-check affected workspaces
+        run: pnpm turbo run check:types --affected
+
+      - name: Build affected workspaces
+        run: pnpm turbo run build --affected
