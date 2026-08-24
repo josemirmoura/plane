@@ -38,12 +38,19 @@ export const SettingsMobileNav = observer(function SettingsMobileNav(props: Prop
             <HamburgerContent className="max-h-100 rounded-lg border border-subtle pb-3" />
           </div>
         )}
-        <IconButton variant="secondary" className="group z-50 shrink-0" icon={Menu} onClick={() => toggleSidebar()} />
+        <IconButton
+          variant="secondary"
+          size="xl"
+          className="group z-50 shrink-0"
+          icon={Menu}
+          aria-label="Toggle settings navigation"
+          onClick={() => toggleSidebar()}
+        />
       </div>
       {/* path */}
-      <div className="flex items-center gap-2">
-        <ChevronRightIcon className="size-4 text-tertiary" />
-        <span className="text-13 font-medium text-secondary">{t(activePath)}</span>
+      <div className="flex min-w-0 items-center gap-2">
+        <ChevronRightIcon className="size-4 shrink-0 text-tertiary" />
+        <span className="truncate text-13 font-medium text-secondary">{t(activePath)}</span>
       </div>
     </div>
   );
