@@ -153,6 +153,7 @@ export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
 
   if (!moduleDetails) return null;
 
+  const moduleHref = `/${workspaceSlug}/projects/${moduleDetails.project_id}/modules/${moduleDetails.id}`;
   const moduleTotalIssues =
     moduleDetails.backlog_issues +
     moduleDetails.unstarted_issues +
@@ -185,18 +186,15 @@ export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
 
   return (
     <div ref={parentRef} className="relative" data-prevent-progress>
-      <Link
-        href={`/${workspaceSlug}/projects/${moduleDetails.project_id}/modules/${moduleDetails.id}`}
-        className="absolute inset-0 z-[1] rounded-lg"
-        aria-label={`Open module ${moduleDetails.name}`}
-      />
-      <Card className="pointer-events-none relative z-[2]">
+      <Card>
         <div>
           <div className="flex min-w-0 items-center justify-between gap-2">
             <Tooltip tooltipContent={moduleDetails.name} position="top" isMobile={isMobile}>
-              <span className="min-w-0 truncate text-14 font-medium">{moduleDetails.name}</span>
+              <Link href={moduleHref} className="min-w-0 truncate text-14 font-medium">
+                {moduleDetails.name}
+              </Link>
             </Tooltip>
-            <div className="pointer-events-auto flex shrink-0 items-center gap-2" onClick={handleEventPropagation}>
+            <div className="flex shrink-0 items-center gap-2" onClick={handleEventPropagation}>
               {moduleStatus && (
                 <ModuleStatusDropdown
                   isDisabled={isDisabled}
@@ -217,10 +215,10 @@ export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
         </div>
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
-            <div className="flex min-w-0 items-center gap-1.5 text-secondary">
+            <Link href={moduleHref} className="flex min-w-0 items-center gap-1.5 text-secondary">
               <WorkItemsIcon className="h-4 w-4 shrink-0 text-tertiary" />
               <span className="truncate text-11 text-tertiary">{issueCount ?? "0 Work item"}</span>
-            </div>
+            </Link>
             {moduleLeadDetails ? (
               <span className="cursor-default">
                 <ButtonAvatars showTooltip={false} userIds={moduleLeadDetails?.id} />
@@ -231,11 +229,10 @@ export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
               </Tooltip>
             )}
           </div>
-          <LinearProgressIndicator size="lg" data={progressIndicatorData} />
-          <div
-            className="pointer-events-auto flex items-center justify-between py-0.5"
-            onClick={handleEventPropagation}
-          >
+          <Link href={moduleHref} aria-label={`Open module ${moduleDetails.name}`}>
+            <LinearProgressIndicator size="lg" data={progressIndicatorData} />
+          </Link>
+          <div className="flex items-center justify-between py-0.5" onClick={handleEventPropagation}>
             <DateRangeDropdown
               buttonContainerClassName={`h-8 w-full flex md:h-6 ${isDisabled ? "cursor-not-allowed" : "cursor-pointer"} items-center gap-1.5 text-tertiary border-[0.5px] border-strong rounded-sm text-11`}
               buttonVariant="transparent-with-text"
@@ -260,7 +257,7 @@ export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
           </div>
         </div>
       </Card>
-      <div className="pointer-events-auto absolute right-4 bottom-[18px] z-[3] flex items-center gap-1.5">
+      <div className="absolute right-4 bottom-[18px] flex items-center gap-1.5">
         {isEditingAllowed && (
           <FavoriteStar
             buttonClassName="size-8 md:size-4"
