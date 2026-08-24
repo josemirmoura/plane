@@ -116,7 +116,7 @@ export const InboxIssueActionsMobileHeader = observer(function InboxIssueActions
         aria-pressed={isMobileSidebar}
         onClick={() => setIsMobileSidebar(!isMobileSidebar)}
       />
-      <div className="z-[15] flex min-w-0 w-full items-center gap-2 bg-surface-1">
+      <div className="z-[15] flex w-full min-w-0 items-center gap-2 bg-surface-1">
         <div className="flex shrink-0 items-center gap-x-2">
           <IconButton
             variant="secondary"
