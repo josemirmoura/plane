@@ -48,14 +48,19 @@ function Breadcrumbs({ className, children, onBack, isLoading = false }: Breadcr
       <div className="flex min-w-0 flex-grow items-center sm:hidden">
         {childrenArray.length > 1 && (
           <>
-            <div className="flex shrink-0 items-center gap-2.5 p-1">
-              {onBack && (
-                <button type="button" onClick={onBack} className="text-secondary" aria-label="Go back">
+            {onBack && (
+              <div className="flex shrink-0 items-center gap-1 p-1">
+                <button
+                  type="button"
+                  onClick={onBack}
+                  className="grid size-8 place-items-center text-secondary"
+                  aria-label="Go back"
+                >
                   ...
                 </button>
-              )}
-              <ChevronRightIcon className="h-3.5 w-3.5 flex-shrink-0 text-placeholder" aria-hidden="true" />
-            </div>
+                <ChevronRightIcon className="h-3.5 w-3.5 flex-shrink-0 text-placeholder" aria-hidden="true" />
+              </div>
+            )}
             <div className="flex min-w-0 items-center gap-2.5 p-1">
               {isLoading ? (
                 <BreadcrumbItemLoader />
