@@ -24,12 +24,17 @@ export const MultipleSelectEntityAction = observer(function MultipleSelectEntity
   const { className, disabled = false, groupId, id, selectionHelpers } = props;
   // derived values
   const isSelected = selectionHelpers.getIsEntitySelected(id);
+  const checkboxId = `select-work-item-${groupId}-${id}`;
 
   if (selectionHelpers.isSelectionDisabled) return null;
 
   return (
-    <label className={cn("grid size-3.5 shrink-0 place-items-center", className)}>
+    <label
+      htmlFor={checkboxId}
+      className={cn("grid size-3.5 shrink-0 place-items-center", disabled ? "cursor-not-allowed" : "cursor-pointer", className)}
+    >
       <Checkbox
+        id={checkboxId}
         className="size-3.5 !outline-none"
         iconClassName="size-3"
         aria-label="Select work item"
