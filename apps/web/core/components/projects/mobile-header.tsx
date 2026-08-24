@@ -75,7 +75,7 @@ export const ProjectsListMobileHeader = observer(function ProjectsListMobileHead
           title={t("common.filters")}
           placement="bottom-end"
           menuButton={
-            <div className="flex items-center gap-2 text-13 text-secondary">
+            <div className="flex min-h-8 items-center gap-2 px-2 text-13 text-secondary">
               <ListFilter className="h-3 w-3" />
               {t("common.filters")}
               <ChevronDownIcon className="h-3 w-3" strokeWidth={2} />
