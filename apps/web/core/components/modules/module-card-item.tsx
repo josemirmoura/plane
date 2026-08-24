@@ -44,7 +44,7 @@ type Props = {
 export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
   const { moduleId } = props;
   // refs
-  const parentRef = useRef(null);
+  const parentRef = useRef<HTMLDivElement | null>(null);
   // router
   const router = useAppRouter();
   const { workspaceSlug, projectId } = useParams();
@@ -184,74 +184,86 @@ export const ModuleCardItem = observer(function ModuleCardItem(props: Props) {
   }));
 
   return (
-    <div className="relative" data-prevent-progress>
-      <Link ref={parentRef} href={`/${workspaceSlug}/projects/${moduleDetails.project_id}/modules/${moduleDetails.id}`}>
-        <Card>
-          <div>
-            <div className="flex items-center justify-between gap-2">
-              <Tooltip tooltipContent={moduleDetails.name} position="top" isMobile={isMobile}>
-                <span className="truncate text-14 font-medium">{moduleDetails.name}</span>
-              </Tooltip>
-              <div className="flex items-center gap-2" onClick={handleEventPropagation}>
-                {moduleStatus && (
-                  <ModuleStatusDropdown
-                    isDisabled={isDisabled}
-                    moduleDetails={moduleDetails}
-                    handleModuleDetailsChange={handleModuleDetailsChange}
-                  />
-                )}
-                <button onClick={openModuleOverview}>
-                  <Info className="h-4 w-4 text-placeholder" />
-                </button>
-              </div>
-            </div>
-          </div>
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-secondary">
-                <WorkItemsIcon className="h-4 w-4 text-tertiary" />
-                <span className="text-11 text-tertiary">{issueCount ?? "0 Work item"}</span>
-              </div>
-              {moduleLeadDetails ? (
-                <span className="cursor-default">
-                  <ButtonAvatars showTooltip={false} userIds={moduleLeadDetails?.id} />
-                </span>
-              ) : (
-                <Tooltip tooltipContent="No lead">
-                  <SquareUser className="mx-1 h-4 w-4 text-tertiary" />
-                </Tooltip>
+    <div ref={parentRef} className="relative" data-prevent-progress>
+      <Link
+        href={`/${workspaceSlug}/projects/${moduleDetails.project_id}/modules/${moduleDetails.id}`}
+        className="absolute inset-0 z-[1] rounded-lg"
+        aria-label={`Open module ${moduleDetails.name}`}
+      />
+      <Card className="pointer-events-none relative z-[2]">
+        <div>
+          <div className="flex min-w-0 items-center justify-between gap-2">
+            <Tooltip tooltipContent={moduleDetails.name} position="top" isMobile={isMobile}>
+              <span className="min-w-0 truncate text-14 font-medium">{moduleDetails.name}</span>
+            </Tooltip>
+            <div className="pointer-events-auto flex shrink-0 items-center gap-2" onClick={handleEventPropagation}>
+              {moduleStatus && (
+                <ModuleStatusDropdown
+                  isDisabled={isDisabled}
+                  moduleDetails={moduleDetails}
+                  handleModuleDetailsChange={handleModuleDetailsChange}
+                />
               )}
-            </div>
-            <LinearProgressIndicator size="lg" data={progressIndicatorData} />
-            <div className="flex items-center justify-between py-0.5" onClick={handleEventPropagation}>
-              <DateRangeDropdown
-                buttonContainerClassName={`h-6 w-full flex ${isDisabled ? "cursor-not-allowed" : "cursor-pointer"} items-center gap-1.5 text-tertiary border-[0.5px] border-strong rounded-sm text-11`}
-                buttonVariant="transparent-with-text"
-                className="h-7"
-                value={{
-                  from: getDate(moduleDetails.start_date),
-                  to: getDate(moduleDetails.target_date),
-                }}
-                onSelect={(val) => {
-                  handleModuleDetailsChange({
-                    start_date: val?.from ? renderFormattedPayloadDate(val.from) : null,
-                    target_date: val?.to ? renderFormattedPayloadDate(val.to) : null,
-                  });
-                }}
-                placeholder={{
-                  from: "Start date",
-                  to: "End date",
-                }}
-                disabled={isDisabled}
-                hideIcon={{ from: renderIcon ?? true, to: renderIcon }}
-              />
+              <button
+                type="button"
+                aria-label={`Open ${moduleDetails.name} overview`}
+                className="grid size-8 place-items-center rounded-sm text-placeholder hover:bg-layer-1 hover:text-secondary md:size-5"
+                onClick={openModuleOverview}
+              >
+                <Info className="h-4 w-4" />
+              </button>
             </div>
           </div>
-        </Card>
-      </Link>
-      <div className="absolute right-4 bottom-[18px] flex items-center gap-1.5">
+        </div>
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center justify-between">
+            <div className="flex min-w-0 items-center gap-1.5 text-secondary">
+              <WorkItemsIcon className="h-4 w-4 shrink-0 text-tertiary" />
+              <span className="truncate text-11 text-tertiary">{issueCount ?? "0 Work item"}</span>
+            </div>
+            {moduleLeadDetails ? (
+              <span className="cursor-default">
+                <ButtonAvatars showTooltip={false} userIds={moduleLeadDetails?.id} />
+              </span>
+            ) : (
+              <Tooltip tooltipContent="No lead">
+                <SquareUser className="mx-1 h-4 w-4 text-tertiary" />
+              </Tooltip>
+            )}
+          </div>
+          <LinearProgressIndicator size="lg" data={progressIndicatorData} />
+          <div
+            className="pointer-events-auto flex items-center justify-between py-0.5"
+            onClick={handleEventPropagation}
+          >
+            <DateRangeDropdown
+              buttonContainerClassName={`h-8 w-full flex md:h-6 ${isDisabled ? "cursor-not-allowed" : "cursor-pointer"} items-center gap-1.5 text-tertiary border-[0.5px] border-strong rounded-sm text-11`}
+              buttonVariant="transparent-with-text"
+              className="h-8 md:h-7"
+              value={{
+                from: getDate(moduleDetails.start_date),
+                to: getDate(moduleDetails.target_date),
+              }}
+              onSelect={(val) => {
+                handleModuleDetailsChange({
+                  start_date: val?.from ? renderFormattedPayloadDate(val.from) : null,
+                  target_date: val?.to ? renderFormattedPayloadDate(val.to) : null,
+                });
+              }}
+              placeholder={{
+                from: "Start date",
+                to: "End date",
+              }}
+              disabled={isDisabled}
+              hideIcon={{ from: renderIcon ?? true, to: renderIcon }}
+            />
+          </div>
+        </div>
+      </Card>
+      <div className="pointer-events-auto absolute right-4 bottom-[18px] z-[3] flex items-center gap-1.5">
         {isEditingAllowed && (
           <FavoriteStar
+            buttonClassName="size-8 md:size-4"
             onClick={(e) => {
               if (moduleDetails.is_favorite) handleRemoveFromFavorites(e);
               else handleAddToFavorites(e);
