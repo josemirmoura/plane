@@ -248,11 +248,12 @@ export const IssueBlock = observer(function IssueBlock(props: IssueBlockProps) {
               )}
 
               {/* sub-issues chevron */}
-              <div className="grid size-4 flex-shrink-0 place-items-center">
+              <div className="grid size-8 flex-shrink-0 place-items-center lg:size-4">
                 {subIssuesCount > 0 && !isEpic && (
                   <button
                     type="button"
-                    className="grid size-4 place-items-center rounded-xs text-placeholder hover:text-tertiary"
+                    className="grid size-8 place-items-center rounded-xs text-placeholder hover:text-tertiary lg:size-4"
+                    aria-label={isExpanded ? "Collapse sub-work-items" : "Expand sub-work-items"}
                     onClick={handleToggleExpand}
                   >
                     <ChevronRightIcon
