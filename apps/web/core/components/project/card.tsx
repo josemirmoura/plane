@@ -45,7 +45,7 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
   const [joinProjectModalOpen, setJoinProjectModal] = useState(false);
   const [restoreProject, setRestoreProject] = useState(false);
   // refs
-  const projectCardRef = useRef(null);
+  const projectCardRef = useRef<HTMLDivElement | null>(null);
   // router
   const router = useAppRouter();
   const { workspaceSlug } = useParams();
@@ -112,6 +112,16 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
   };
 
   const projectLink = `${workspaceSlug}/projects/${project.id}/issues`;
+  const projectHref = `/${workspaceSlug}/projects/${project.id}/issues`;
+
+  const handleProjectLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!isMemberOfProject || isArchived) {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!isArchived) setJoinProjectModal(true);
+    }
+  };
+
   const handleCopyText = () =>
     copyUrlToClipboard(projectLink).then(() =>
       setToast({
@@ -194,78 +204,74 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
           archive={false}
         />
       )}
-      <Link
+      <div
         ref={projectCardRef}
-        href={`/${workspaceSlug}/projects/${project.id}/issues`}
-        onClick={(e) => {
-          if (!isMemberOfProject || isArchived) {
-            e.preventDefault();
-            e.stopPropagation();
-            if (!isArchived) setJoinProjectModal(true);
-          }
-        }}
-        data-prevent-progress={!isMemberOfProject || isArchived}
         className={cn(
           "group/project-card flex w-full flex-col justify-between overflow-hidden rounded-lg border border-subtle bg-layer-2 transition-all duration-300 hover:border-strong hover:shadow-raised-200"
         )}
       >
         <ContextMenu parentRef={projectCardRef} items={MENU_ITEMS} />
         <div className="relative h-[118px] w-full rounded-t">
-          <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black/60 to-transparent" />
-
-          <CoverImage
-            src={project.cover_image_url}
-            alt={project.name}
-            className="absolute top-0 left-0 h-full w-full rounded-t"
-          />
-
-          <div className="absolute bottom-4 z-[1] flex h-10 w-full items-center justify-between gap-3 px-4">
-            <div className="flex min-w-0 flex-1 items-center gap-2.5">
-              <div className="grid h-9 w-9 shrink-0 place-items-center rounded-sm bg-white/10">
-                <Logo logo={project.logo_props} size={18} />
-              </div>
-
-              <div className="flex min-w-0 flex-1 flex-col justify-between gap-0.5">
-                <h3 className="truncate font-semibold text-on-color">{project.name}</h3>
-                <span className="flex min-w-0 items-center gap-1.5">
-                  <p className="truncate text-11 font-medium text-on-color">{project.identifier} </p>
-                  {project.network === 0 && <LockIcon className="h-2.5 w-2.5 shrink-0 text-on-color" />}
-                </span>
+          <Link
+            href={projectHref}
+            onClick={handleProjectLinkClick}
+            data-prevent-progress={!isMemberOfProject || isArchived}
+            className="absolute inset-0 rounded-t"
+            aria-label={`Open project ${project.name}`}
+          >
+            <div className="absolute inset-0 z-[1] bg-gradient-to-t from-black/60 to-transparent" />
+            <CoverImage
+              src={project.cover_image_url}
+              alt={project.name}
+              className="absolute top-0 left-0 h-full w-full rounded-t"
+            />
+            <div className="absolute bottom-4 z-[1] flex h-10 w-full items-center px-4 pr-24">
+              <div className="flex min-w-0 flex-1 items-center gap-2.5">
+                <div className="grid h-9 w-9 shrink-0 place-items-center rounded-sm bg-white/10">
+                  <Logo logo={project.logo_props} size={18} />
+                </div>
+                <div className="flex min-w-0 flex-1 flex-col justify-between gap-0.5">
+                  <h3 className="truncate font-semibold text-on-color">{project.name}</h3>
+                  <span className="flex min-w-0 items-center gap-1.5">
+                    <p className="truncate text-11 font-medium text-on-color">{project.identifier} </p>
+                    {project.network === 0 && <LockIcon className="h-2.5 w-2.5 shrink-0 text-on-color" />}
+                  </span>
+                </div>
               </div>
             </div>
+          </Link>
 
-            {!isArchived && (
-              <div data-prevent-progress className="flex h-full shrink-0 items-center gap-2">
-                <button
-                  type="button"
-                  className="flex size-8 items-center justify-center rounded-sm bg-white/10 md:size-6"
-                  aria-label="Copy project link"
+          {!isArchived && (
+            <div data-prevent-progress className="absolute right-4 bottom-4 z-[2] flex h-10 items-center gap-2">
+              <button
+                type="button"
+                className="flex size-8 items-center justify-center rounded-sm bg-white/10 md:size-6"
+                aria-label="Copy project link"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  handleCopyText();
+                }}
+              >
+                <LinkIcon className="h-3 w-3 text-on-color" />
+              </button>
+              {shouldRenderFavorite && (
+                <FavoriteStar
+                  buttonClassName="size-8 md:size-6 bg-white/10 rounded-sm"
+                  iconClassName={cn("h-3 w-3", {
+                    "text-on-color": !project.is_favorite,
+                  })}
                   onClick={(e) => {
-                    e.stopPropagation();
                     e.preventDefault();
-                    handleCopyText();
+                    e.stopPropagation();
+                    if (project.is_favorite) handleRemoveFromFavorites();
+                    else handleAddToFavorites();
                   }}
-                >
-                  <LinkIcon className="h-3 w-3 text-on-color" />
-                </button>
-                {shouldRenderFavorite && (
-                  <FavoriteStar
-                    buttonClassName="size-8 md:size-6 bg-white/10 rounded-sm"
-                    iconClassName={cn("h-3 w-3", {
-                      "text-on-color": !project.is_favorite,
-                    })}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      if (project.is_favorite) handleRemoveFromFavorites();
-                      else handleAddToFavorites();
-                    }}
-                    selected={!!project.is_favorite}
-                  />
-                )}
-              </div>
-            )}
-          </div>
+                  selected={!!project.is_favorite}
+                />
+              )}
+            </div>
+          )}
         </div>
 
         <div
@@ -273,39 +279,54 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
             "opacity-90": isArchived,
           })}
         >
-          <p className="line-clamp-2 text-13 break-words text-tertiary">
-            {project.description && project.description.trim() !== ""
-              ? project.description
-              : `Created on ${renderFormattedDate(project.created_at)}`}
-          </p>
-          <div className="item-center flex justify-between gap-2">
-            <div className="flex min-w-0 items-center justify-center gap-2">
-              <Tooltip
-                isMobile={isMobile}
-                tooltipHeading="Members"
-                tooltipContent={
-                  project.members && project.members.length > 0 ? `${project.members.length} Members` : "No Member"
-                }
-                position="top"
-              >
-                {projectMembersIds && projectMembersIds.length > 0 ? (
-                  <div className="flex min-w-0 cursor-pointer items-center gap-2 text-secondary">
-                    <AvatarGroup showTooltip={false}>
-                      {projectMembersIds.map((memberId) => {
-                        const member = getUserDetails(memberId);
-                        if (!member) return null;
-                        return (
-                          <Avatar key={member.id} name={member.display_name} src={getFileURL(member.avatar_url)} />
-                        );
-                      })}
-                    </AvatarGroup>
-                  </div>
-                ) : (
-                  <span className="truncate text-13 text-placeholder italic">No Member Yet</span>
-                )}
-              </Tooltip>
-              {isArchived && <div className="shrink-0 text-11 font-medium text-placeholder">Archived</div>}
-            </div>
+          <Link
+            href={projectHref}
+            onClick={handleProjectLinkClick}
+            data-prevent-progress={!isMemberOfProject || isArchived}
+            className="min-w-0"
+          >
+            <p className="line-clamp-2 text-13 break-words text-tertiary">
+              {project.description && project.description.trim() !== ""
+                ? project.description
+                : `Created on ${renderFormattedDate(project.created_at)}`}
+            </p>
+          </Link>
+          <div className="flex items-center justify-between gap-2">
+            <Link
+              href={projectHref}
+              onClick={handleProjectLinkClick}
+              data-prevent-progress={!isMemberOfProject || isArchived}
+              className="min-w-0 flex-1"
+            >
+              <div className="flex min-w-0 items-center gap-2">
+                <Tooltip
+                  isMobile={isMobile}
+                  tooltipHeading="Members"
+                  tooltipContent={
+                    project.members && project.members.length > 0 ? `${project.members.length} Members` : "No Member"
+                  }
+                  position="top"
+                >
+                  {projectMembersIds && projectMembersIds.length > 0 ? (
+                    <div className="flex min-w-0 items-center gap-2 text-secondary">
+                      <AvatarGroup showTooltip={false}>
+                        {projectMembersIds.map((memberId) => {
+                          const member = getUserDetails(memberId);
+                          if (!member) return null;
+                          return (
+                            <Avatar key={member.id} name={member.display_name} src={getFileURL(member.avatar_url)} />
+                          );
+                        })}
+                      </AvatarGroup>
+                    </div>
+                  ) : (
+                    <span className="truncate text-13 text-placeholder italic">No Member Yet</span>
+                  )}
+                </Tooltip>
+                {isArchived && <div className="shrink-0 text-11 font-medium text-placeholder">Archived</div>}
+              </div>
+            </Link>
+
             {isArchived ? (
               hasAdminRole && (
                 <div className="flex shrink-0 items-center justify-center gap-1">
@@ -341,9 +362,6 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
                   (hasAdminRole || hasMemberRole ? (
                     <Link
                       className="flex size-8 shrink-0 items-center justify-center rounded-sm text-placeholder hover:bg-layer-1 hover:text-secondary md:size-6"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                      }}
                       href={`/${workspaceSlug}/settings/projects/${project.id}`}
                       aria-label="Project settings"
                     >
@@ -360,11 +378,7 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
                     <Button
                       variant="link"
                       className="min-h-8 !p-0 font-semibold md:min-h-6"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setJoinProjectModal(true);
-                      }}
+                      onClick={() => setJoinProjectModal(true)}
                     >
                       Join
                     </Button>
@@ -374,7 +388,7 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
             )}
           </div>
         </div>
-      </Link>
+      </div>
     </>
   );
 });
