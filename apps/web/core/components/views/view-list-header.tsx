@@ -75,7 +75,7 @@ export const ViewListHeader = observer(function ViewListHeader() {
           className={cn(
             "ml-auto flex w-0 items-center justify-start gap-1 overflow-hidden rounded-md border border-transparent bg-surface-1 text-placeholder opacity-0 transition-[width] ease-linear",
             {
-              "w-30 border-subtle px-2.5 py-1.5 opacity-100 md:w-64": isSearchOpen,
+              "w-40 border-subtle py-1.5 pr-1 pl-2.5 opacity-100 md:w-64 md:pr-2.5": isSearchOpen,
             }
           )}
         >
@@ -91,7 +91,7 @@ export const ViewListHeader = observer(function ViewListHeader() {
           {isSearchOpen && (
             <button
               type="button"
-              className="grid shrink-0 place-items-center"
+              className="grid size-8 shrink-0 place-items-center rounded-sm hover:bg-layer-1 md:size-5"
               aria-label="Close search"
               onClick={() => {
                 updateFilters("searchQuery", "");
