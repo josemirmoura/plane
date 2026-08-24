@@ -65,26 +65,23 @@ interface IssueDetailsBlockProps {
 const KanbanIssueDetailsBlock = observer(function KanbanIssueDetailsBlock(props: IssueDetailsBlockProps) {
   const { cardRef, issue, updateIssue, quickActions, isReadOnly, displayProperties, isEpic = false } = props;
   // refs
-  const menuActionRef = useRef<HTMLButtonElement | null>(null);
+  const menuActionRef = useRef<HTMLSpanElement | null>(null);
   // states
   const [isMenuActive, setIsMenuActive] = useState(false);
   // hooks
   const { isMobile } = usePlatformOS();
 
   const customActionButton = (
-    <button
+    <span
       ref={menuActionRef}
-      type="button"
       className={cn(
         "flex size-8 cursor-pointer items-center justify-center rounded-sm text-placeholder hover:bg-layer-1 md:size-6",
         isMenuActive ? "bg-layer-1 text-primary" : "text-secondary"
       )}
-      aria-label="Open work item actions"
-      aria-expanded={isMenuActive}
       onClick={() => setIsMenuActive(!isMenuActive)}
     >
       <MoreHorizontal className="h-3.5 w-3.5" />
-    </button>
+    </span>
   );
 
   // oxlint-disable-next-line unicorn/consistent-function-scoping
