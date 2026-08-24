@@ -220,24 +220,26 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
           />
 
           <div className="absolute bottom-4 z-[1] flex h-10 w-full items-center justify-between gap-3 px-4">
-            <div className="flex flex-grow items-center gap-2.5 truncate">
-              <div className="grid h-9 w-9 flex-shrink-0 place-items-center rounded-sm bg-white/10">
+            <div className="flex min-w-0 flex-1 items-center gap-2.5">
+              <div className="grid h-9 w-9 shrink-0 place-items-center rounded-sm bg-white/10">
                 <Logo logo={project.logo_props} size={18} />
               </div>
 
-              <div className="flex w-full flex-col justify-between gap-0.5 truncate">
+              <div className="flex min-w-0 flex-1 flex-col justify-between gap-0.5">
                 <h3 className="truncate font-semibold text-on-color">{project.name}</h3>
-                <span className="flex items-center gap-1.5">
-                  <p className="text-11 font-medium text-on-color">{project.identifier} </p>
-                  {project.network === 0 && <LockIcon className="h-2.5 w-2.5 text-on-color" />}
+                <span className="flex min-w-0 items-center gap-1.5">
+                  <p className="truncate text-11 font-medium text-on-color">{project.identifier} </p>
+                  {project.network === 0 && <LockIcon className="h-2.5 w-2.5 shrink-0 text-on-color" />}
                 </span>
               </div>
             </div>
 
             {!isArchived && (
-              <div data-prevent-progress className="flex h-full flex-shrink-0 items-center gap-2">
+              <div data-prevent-progress className="flex h-full shrink-0 items-center gap-2">
                 <button
-                  className="flex h-6 w-6 items-center justify-center rounded-sm bg-white/10"
+                  type="button"
+                  className="flex size-8 items-center justify-center rounded-sm bg-white/10 md:size-6"
+                  aria-label="Copy project link"
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();
@@ -248,7 +250,7 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
                 </button>
                 {shouldRenderFavorite && (
                   <FavoriteStar
-                    buttonClassName="h-6 w-6 bg-white/10 rounded-sm"
+                    buttonClassName="size-8 md:size-6 bg-white/10 rounded-sm"
                     iconClassName={cn("h-3 w-3", {
                       "text-on-color": !project.is_favorite,
                     })}
@@ -276,8 +278,8 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
               ? project.description
               : `Created on ${renderFormattedDate(project.created_at)}`}
           </p>
-          <div className="item-center flex justify-between">
-            <div className="flex items-center justify-center gap-2">
+          <div className="item-center flex justify-between gap-2">
+            <div className="flex min-w-0 items-center justify-center gap-2">
               <Tooltip
                 isMobile={isMobile}
                 tooltipHeading="Members"
@@ -287,7 +289,7 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
                 position="top"
               >
                 {projectMembersIds && projectMembersIds.length > 0 ? (
-                  <div className="flex cursor-pointer items-center gap-2 text-secondary">
+                  <div className="flex min-w-0 cursor-pointer items-center gap-2 text-secondary">
                     <AvatarGroup showTooltip={false}>
                       {projectMembersIds.map((memberId) => {
                         const member = getUserDetails(memberId);
@@ -299,29 +301,30 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
                     </AvatarGroup>
                   </div>
                 ) : (
-                  <span className="text-13 text-placeholder italic">No Member Yet</span>
+                  <span className="truncate text-13 text-placeholder italic">No Member Yet</span>
                 )}
               </Tooltip>
-              {isArchived && <div className="text-11 font-medium text-placeholder">Archived</div>}
+              {isArchived && <div className="shrink-0 text-11 font-medium text-placeholder">Archived</div>}
             </div>
             {isArchived ? (
               hasAdminRole && (
-                <div className="flex items-center justify-center gap-2">
-                  <div
-                    className="flex items-center justify-center text-11 font-medium text-placeholder hover:text-secondary"
+                <div className="flex shrink-0 items-center justify-center gap-1">
+                  <button
+                    type="button"
+                    className="flex min-h-8 items-center justify-center gap-1.5 rounded-sm px-1.5 text-11 font-medium text-placeholder hover:text-secondary md:min-h-6"
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       setRestoreProject(true);
                     }}
                   >
-                    <div className="flex items-center gap-1.5">
-                      <ArchiveRestoreIcon className="h-3.5 w-3.5" />
-                      Restore
-                    </div>
-                  </div>
-                  <div
-                    className="flex items-center justify-center text-11 font-medium text-placeholder hover:text-secondary"
+                    <ArchiveRestoreIcon className="h-3.5 w-3.5" />
+                    Restore
+                  </button>
+                  <button
+                    type="button"
+                    className="grid size-8 place-items-center rounded-sm text-placeholder hover:text-secondary md:size-6"
+                    aria-label="Delete project"
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -329,7 +332,7 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
                     }}
                   >
                     <TrashIcon className="h-3.5 w-3.5" />
-                  </div>
+                  </button>
                 </div>
               )
             ) : (
@@ -337,25 +340,26 @@ export const ProjectCard = observer(function ProjectCard(props: Props) {
                 {isMemberOfProject &&
                   (hasAdminRole || hasMemberRole ? (
                     <Link
-                      className="flex items-center justify-center rounded-sm p-1 text-placeholder hover:bg-layer-1 hover:text-secondary"
+                      className="flex size-8 shrink-0 items-center justify-center rounded-sm text-placeholder hover:bg-layer-1 hover:text-secondary md:size-6"
                       onClick={(e) => {
                         e.stopPropagation();
                       }}
                       href={`/${workspaceSlug}/settings/projects/${project.id}`}
+                      aria-label="Project settings"
                     >
                       <Settings className="h-3.5 w-3.5" />
                     </Link>
                   ) : (
-                    <span className="flex items-center gap-1 text-13 text-placeholder">
+                    <span className="flex shrink-0 items-center gap-1 text-13 text-placeholder">
                       <CheckIcon className="h-3.5 w-3.5" />
                       Joined
                     </span>
                   ))}
                 {!isMemberOfProject && (
-                  <div className="flex items-center">
+                  <div className="flex shrink-0 items-center">
                     <Button
                       variant="link"
-                      className="!p-0 font-semibold"
+                      className="min-h-8 !p-0 font-semibold md:min-h-6"
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
