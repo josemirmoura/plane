@@ -92,10 +92,10 @@ export const HeaderGroupByCard = observer(function HeaderGroupByCard(props: IHea
     <>
       <div className="group/list-header flex w-full flex-shrink-0 items-center gap-2 py-1.5">
         {canSelectIssues && (
-          <div className="absolute left-1 flex w-3.5 flex-shrink-0 items-center">
+          <div className="relative flex size-8 flex-shrink-0 items-center justify-center md:absolute md:left-1 md:size-3.5">
             <MultipleSelectGroupAction
               className={cn(
-                "pointer-events-none size-3.5 opacity-0 !outline-none group-hover/list-header:pointer-events-auto group-hover/list-header:opacity-100",
+                "size-8 transition-opacity md:pointer-events-none md:size-3.5 md:opacity-0 md:group-hover/list-header:pointer-events-auto md:group-hover/list-header:opacity-100",
                 {
                   "pointer-events-auto opacity-100": !isGroupSelectionEmpty,
                 }
@@ -110,21 +110,23 @@ export const HeaderGroupByCard = observer(function HeaderGroupByCard(props: IHea
           {icon ?? <CircleDashed className="size-3.5" strokeWidth={2} />}
         </div>
 
-        {/* eslint-disable-next-line jsx_a11y/click-events-have-key-events eslint-disable-next-line jsx_a11y/no-static-element-interactions */}
-        <div
-          className="relative flex w-full cursor-pointer flex-row items-center gap-1 overflow-hidden"
+        <button
+          type="button"
+          className="relative flex min-w-0 flex-1 cursor-pointer flex-row items-center gap-1 overflow-hidden text-left"
           onClick={() => handleCollapsedGroups(groupID)}
+          aria-label={`Toggle ${title} group`}
         >
-          <div className="line-clamp-1 inline-block truncate font-medium text-primary">{title}</div>
-          <div className="pl-2 text-13 font-medium text-tertiary">{count || 0}</div>
-          <div className="px-2.5"></div>
-        </div>
+          <span className="line-clamp-1 inline-block truncate font-medium text-primary">{title}</span>
+          <span className="pl-2 text-13 font-medium text-tertiary">{count || 0}</span>
+          <span className="px-2.5" />
+        </button>
 
         {!disableIssueCreation &&
           (renderExistingIssueModal ? (
             <CustomMenu
+              ariaLabel="Add work item"
               customButton={
-                <span className="flex h-5 w-5 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-xs transition-all hover:bg-layer-1">
+                <span className="flex size-8 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-xs transition-all hover:bg-layer-1 md:size-5">
                   <PlusIcon className="h-3.5 w-3.5" strokeWidth={2} />
                 </span>
               }
@@ -145,15 +147,16 @@ export const HeaderGroupByCard = observer(function HeaderGroupByCard(props: IHea
               </CustomMenu.MenuItem>
             </CustomMenu>
           ) : (
-            // oxlint-disable-next-line jsx_a11y/click-events-have-key-events oxlint-disable-next-line jsx_a11y/no-static-element-interactions
-            <div
-              className="flex h-5 w-5 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-xs transition-all hover:bg-layer-1"
+            <button
+              type="button"
+              className="flex size-8 flex-shrink-0 cursor-pointer items-center justify-center overflow-hidden rounded-xs transition-all hover:bg-layer-1 md:size-5"
+              aria-label="Create work item"
               onClick={() => {
                 setIsOpen(true);
               }}
             >
               <PlusIcon width={14} strokeWidth={2} />
-            </div>
+            </button>
           ))}
 
         {isEpic ? (
