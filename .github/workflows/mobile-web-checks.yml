@@ -126,14 +126,19 @@ jobs:
           cat /tmp/storybook.log
           exit 1
 
-      - name: Capture responsive Breadcrumbs screenshots
+      - name: Capture responsive UI screenshots
         run: |
           mkdir -p mobile-screenshots
-          STORY_URL='http://127.0.0.1:6006/iframe.html?id=ui-breadcrumbs--default&viewMode=story'
-          pnpm dlx playwright@1.55.0 screenshot --viewport-size='360,800' --full-page "$STORY_URL" mobile-screenshots/breadcrumbs-360.png
-          pnpm dlx playwright@1.55.0 screenshot --viewport-size='390,844' --full-page "$STORY_URL" mobile-screenshots/breadcrumbs-390.png
-          pnpm dlx playwright@1.55.0 screenshot --viewport-size='412,915' --full-page "$STORY_URL" mobile-screenshots/breadcrumbs-412.png
-          pnpm dlx playwright@1.55.0 screenshot --viewport-size='768,1024' --full-page "$STORY_URL" mobile-screenshots/breadcrumbs-768.png
+          BREADCRUMBS_URL='http://127.0.0.1:6006/iframe.html?id=ui-breadcrumbs--default&viewMode=story'
+          HEADER_URL='http://127.0.0.1:6006/iframe.html?id=ui-header--responsive-content&viewMode=story'
+          pnpm dlx playwright@1.55.0 screenshot --viewport-size='360,800' --full-page "$BREADCRUMBS_URL" mobile-screenshots/breadcrumbs-360.png
+          pnpm dlx playwright@1.55.0 screenshot --viewport-size='390,844' --full-page "$BREADCRUMBS_URL" mobile-screenshots/breadcrumbs-390.png
+          pnpm dlx playwright@1.55.0 screenshot --viewport-size='412,915' --full-page "$BREADCRUMBS_URL" mobile-screenshots/breadcrumbs-412.png
+          pnpm dlx playwright@1.55.0 screenshot --viewport-size='768,1024' --full-page "$BREADCRUMBS_URL" mobile-screenshots/breadcrumbs-768.png
+          pnpm dlx playwright@1.55.0 screenshot --viewport-size='360,800' --full-page "$HEADER_URL" mobile-screenshots/header-360.png
+          pnpm dlx playwright@1.55.0 screenshot --viewport-size='390,844' --full-page "$HEADER_URL" mobile-screenshots/header-390.png
+          pnpm dlx playwright@1.55.0 screenshot --viewport-size='412,915' --full-page "$HEADER_URL" mobile-screenshots/header-412.png
+          pnpm dlx playwright@1.55.0 screenshot --viewport-size='768,1024' --full-page "$HEADER_URL" mobile-screenshots/header-768.png
 
       - name: Upload screenshots
         uses: actions/upload-artifact@v4
