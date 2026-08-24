@@ -108,12 +108,12 @@ export const ProjectViewForm = observer(function ProjectViewForm(props: Props) {
       <div className="space-y-5 p-5">
         <h3 className="text-18 font-medium text-secondary">{data ? t("view.update.label") : t("view.create.label")}</h3>
         <div className="space-y-3">
-          <div className="flex w-full items-start gap-2">
+          <div className="flex w-full min-w-0 items-start gap-2">
             <EmojiPicker
               iconType="lucide"
               isOpen={isOpen}
               handleToggle={(val: boolean) => setIsOpen(val)}
-              className="flex-shrink0 flex items-center justify-center"
+              className="flex shrink-0 items-center justify-center"
               buttonClassName="flex items-center justify-center"
               label={
                 <span className="grid h-9 w-9 place-items-center rounded-md bg-surface-2">
@@ -150,7 +150,7 @@ export const ProjectViewForm = observer(function ProjectViewForm(props: Props) {
                   : EmojiIconPickerTypes.ICON
               }
             />
-            <div className="flew-grow w-full space-y-1">
+            <div className="min-w-0 flex-grow space-y-1">
               <Controller
                 control={control}
                 name="name"
@@ -198,7 +198,7 @@ export const ProjectViewForm = observer(function ProjectViewForm(props: Props) {
               )}
             />
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Controller
               control={control}
               name="display_filters"
@@ -278,7 +278,7 @@ export const ProjectViewForm = observer(function ProjectViewForm(props: Props) {
           </div>
         </div>
       </div>
-      <div className="flex items-center justify-end gap-2 border-t-[0.5px] border-subtle px-5 py-4">
+      <div className="flex flex-wrap items-center justify-end gap-2 border-t-[0.5px] border-subtle px-5 py-4">
         <Button variant="secondary" size="lg" onClick={handleClose} tabIndex={getIndex("cancel")}>
           {t("common.cancel")}
         </Button>
