@@ -442,12 +442,12 @@ export const IssueFormRoot = observer(function IssueFormRoot(props: IssueFormPro
               </div>
               {showActionButtons && (
                 <div
-                  className="flex items-center justify-end gap-4 border-t-[0.5px] border-subtle pt-6 pb-3"
+                  className="flex flex-col items-stretch gap-3 border-t-[0.5px] border-subtle pt-6 pb-3 sm:flex-row sm:items-center sm:justify-end sm:gap-4"
                   tabIndex={getIndex("create_more")}
                 >
                   {!data?.id && (
                     <div
-                      className="inline-flex cursor-pointer items-center gap-1.5"
+                      className="inline-flex min-h-8 cursor-pointer items-center gap-1.5 self-start"
                       onClick={() => onCreateMoreToggleChange(!isCreateMoreToggleEnabled)}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") onCreateMoreToggleChange(!isCreateMoreToggleEnabled);
@@ -458,7 +458,7 @@ export const IssueFormRoot = observer(function IssueFormRoot(props: IssueFormPro
                       <span className="text-caption-sm-regular">{t("create_more")}</span>
                     </div>
                   )}
-                  <div className="flex items-center gap-2">
+                  <div className="flex w-full flex-wrap items-center justify-end gap-2 sm:w-auto">
                     <div tabIndex={getIndex("discard_button")}>
                       <Button
                         variant="secondary"
