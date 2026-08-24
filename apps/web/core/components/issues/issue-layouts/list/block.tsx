@@ -296,7 +296,7 @@ export const IssueBlock = observer(function IssueBlock(props: IssueBlockProps) {
           )}
         </div>
         <div
-          className={cn("flex min-w-0 w-full items-center gap-2", {
+          className={cn("flex w-full min-w-0 items-center gap-2", {
             "md:w-auto md:flex-shrink-0": isSidebarCollapsed,
             "lg:w-auto lg:flex-shrink-0": !isSidebarCollapsed,
           })}
@@ -304,7 +304,7 @@ export const IssueBlock = observer(function IssueBlock(props: IssueBlockProps) {
           {!issue?.tempId ? (
             <>
               <IssueProperties
-                className={`relative flex min-w-0 max-w-full flex-wrap ${isSidebarCollapsed ? "md:flex-shrink-0 md:flex-grow" : "lg:flex-shrink-0 lg:flex-grow"} items-center gap-2 whitespace-nowrap`}
+                className={`relative flex max-w-full min-w-0 flex-wrap ${isSidebarCollapsed ? "md:flex-shrink-0 md:flex-grow" : "lg:flex-shrink-0 lg:flex-grow"} items-center gap-2 whitespace-nowrap`}
                 issue={issue}
                 isReadOnly={!canEditIssueProperties}
                 updateIssue={updateIssue}
