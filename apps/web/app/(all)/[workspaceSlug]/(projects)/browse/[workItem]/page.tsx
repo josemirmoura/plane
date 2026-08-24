@@ -91,14 +91,14 @@ export const IssueDetailsPage = observer(function IssueDetailsPage({ params }: R
 
   if (issueLoader) {
     return (
-      <Loader className="flex h-full gap-5 p-5">
-        <div className="basis-2/3 space-y-2">
+      <Loader className="flex h-full flex-col gap-5 p-4 sm:p-5 md:flex-row">
+        <div className="w-full space-y-2 md:basis-2/3">
           <Loader.Item height="30px" width="40%" />
           <Loader.Item height="15px" width="60%" />
           <Loader.Item height="15px" width="60%" />
           <Loader.Item height="15px" width="40%" />
         </div>
-        <div className="basis-1/3 space-y-3">
+        <div className="hidden basis-1/3 space-y-3 md:block">
           <Loader.Item height="30px" />
           <Loader.Item height="30px" />
           <Loader.Item height="30px" />
