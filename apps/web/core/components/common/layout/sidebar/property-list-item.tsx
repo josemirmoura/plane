@@ -19,13 +19,13 @@ export function SidebarPropertyListItem(props: TSidebarPropertyListItemProps) {
   const { icon: Icon, label, children, appendElement, childrenClassName } = props;
 
   return (
-    <div className="flex items-start gap-2">
-      <div className="flex h-7.5 w-30 shrink-0 items-center gap-1.5 text-body-xs-regular text-tertiary">
+    <div className="flex min-w-0 items-start gap-2">
+      <div className="flex h-8 w-30 min-w-0 shrink-0 items-center gap-1.5 text-body-xs-regular text-tertiary md:h-7.5">
         <Icon className="size-4 shrink-0" />
-        <span>{label}</span>
+        <span className="min-w-0 truncate">{label}</span>
         {appendElement}
       </div>
-      <div className={cn("flex grow flex-wrap items-center gap-1", childrenClassName)}>{children}</div>
+      <div className={cn("flex min-w-0 grow flex-wrap items-center gap-1", childrenClassName)}>{children}</div>
     </div>
   );
 }
