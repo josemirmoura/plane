@@ -20,7 +20,7 @@ export function SidebarPropertyListItem(props: TSidebarPropertyListItemProps) {
 
   return (
     <div className="flex min-w-0 items-start gap-2">
-      <div className="flex h-8 w-30 min-w-0 shrink-0 items-center gap-1.5 text-body-xs-regular text-tertiary md:h-7.5">
+      <div className="flex h-8 w-24 min-w-0 shrink-0 items-center gap-1.5 text-body-xs-regular text-tertiary sm:w-30 md:h-7.5">
         <Icon className="size-4 shrink-0" />
         <span className="min-w-0 truncate">{label}</span>
         {appendElement}
