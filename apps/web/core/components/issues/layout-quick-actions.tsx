@@ -5,13 +5,13 @@
  */
 
 import { observer } from "mobx-react";
+import { Ellipsis } from "lucide-react";
+import { getIconButtonStyling } from "@plane/propel/icon-button";
 import { TOAST_TYPE, setToast } from "@plane/propel/toast";
 import type { TContextMenuItem } from "@plane/ui";
 import { CustomMenu } from "@plane/ui";
 import { copyUrlToClipboard, cn } from "@plane/utils";
 import { useLayoutMenuItems } from "@/components/common/quick-actions-helper";
-import { Ellipsis } from "lucide-react";
-import { IconButton } from "@plane/propel/icon-button";
 
 type Props = {
   workspaceSlug: string;
@@ -50,12 +50,13 @@ export const LayoutQuickActions = observer(function LayoutQuickActions(props: Pr
     <>
       {additionalModals}
       <CustomMenu
-        ellipsis
         placement="bottom-end"
+        ariaLabel="More layout actions"
         closeOnSelect
         maxHeight="lg"
-        className="flex size-[26px] flex-shrink-0 items-center justify-center rounded"
-        customButton={<IconButton size="lg" variant="tertiary" icon={Ellipsis} />}
+        className="flex flex-shrink-0 items-center justify-center"
+        customButton={<Ellipsis className="size-4" />}
+        customButtonClassName={cn(getIconButtonStyling("tertiary", "xl"), "md:size-7")}
       >
         {MENU_ITEMS.map((item) => {
           if (item.shouldRender === false) return null;
