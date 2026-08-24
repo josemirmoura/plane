@@ -102,16 +102,22 @@ export const InboxIssueActionsMobileHeader = observer(function InboxIssueActions
   return (
     <Header variant={EHeaderVariant.SECONDARY} className="justify-start">
       {isNotificationEmbed && (
-        <button onClick={embedRemoveCurrentNotification}>
+        <button type="button" onClick={embedRemoveCurrentNotification} aria-label="Close notification">
           <MoveRight className="mr-2 h-4 w-4 text-tertiary hover:text-secondary" />
         </button>
       )}
-      <PanelLeft
+      <IconButton
+        variant="ghost"
+        size="lg"
+        icon={PanelLeft}
+        iconClassName={isMobileSidebar ? "text-accent-primary" : "text-secondary"}
+        className="mr-1 shrink-0"
+        aria-label="Toggle inbox sidebar"
+        aria-pressed={isMobileSidebar}
         onClick={() => setIsMobileSidebar(!isMobileSidebar)}
-        className={cn("my-auto mr-2 h-4 w-4 flex-shrink-0", isMobileSidebar ? "text-accent-primary" : "text-secondary")}
       />
-      <div className="z-[15] flex w-full items-center gap-2 bg-surface-1">
-        <div className="flex items-center gap-x-2">
+      <div className="z-[15] flex min-w-0 w-full items-center gap-2 bg-surface-1">
+        <div className="flex shrink-0 items-center gap-x-2">
           <IconButton
             variant="secondary"
             size="lg"
@@ -127,14 +133,15 @@ export const InboxIssueActionsMobileHeader = observer(function InboxIssueActions
             onClick={() => handleInboxIssueNavigation("next")}
           />
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex min-w-0 items-center gap-4">
           <InboxIssueStatus inboxIssue={inboxIssue} iconSize={12} />
-          <div className="flex w-full items-center justify-end">
+          <div className="flex min-w-0 items-center justify-end">
             <NameDescriptionUpdateStatus isSubmitting={isSubmitting} />
           </div>
         </div>
-        <div className="ml-auto">
+        <div className="ml-auto shrink-0">
           <CustomMenu
+            ariaLabel="More work item actions"
             customButton={<MoreHorizontal className="size-4" />}
             customButtonClassName={getIconButtonStyling("secondary", "lg")}
             placement="bottom-start"
