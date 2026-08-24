@@ -10,6 +10,7 @@ import { PanelLeft } from "lucide-react";
 // plane imports
 import { useTranslation } from "@plane/i18n";
 import { EmptyStateCompact } from "@plane/propel/empty-state";
+import { IconButton } from "@plane/propel/icon-button";
 import { IntakeIcon } from "@plane/propel/icons";
 import { EInboxIssueCurrentTab } from "@plane/types";
 import { cn } from "@plane/utils";
@@ -78,9 +79,14 @@ export const InboxIssueRoot = observer(function InboxIssueRoot(props: TInboxIssu
     <>
       {!inboxIssueId && (
         <div className="flex h-12 w-full items-center border-b border-subtle px-4 lg:hidden">
-          <PanelLeft
+          <IconButton
+            variant="ghost"
+            size="xl"
+            icon={PanelLeft}
+            iconClassName={isMobileSidebar ? "text-accent-primary" : "text-secondary"}
+            aria-label="Toggle inbox sidebar"
+            aria-pressed={isMobileSidebar}
             onClick={() => setIsMobileSidebar(!isMobileSidebar)}
-            className={cn("h-4 w-4", isMobileSidebar ? "text-accent-primary" : "text-secondary")}
           />
         </div>
       )}
