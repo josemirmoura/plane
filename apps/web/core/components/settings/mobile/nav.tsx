@@ -34,7 +34,7 @@ export const SettingsMobileNav = observer(function SettingsMobileNav(props: Prop
     <div className="flex items-center gap-4 border-b border-subtle px-page-x py-3 md:hidden">
       <div ref={sidebarRef} className="relative z-50 w-fit">
         {!sidebarCollapsed && (
-          <div className="absolute top-10.5 left-0 z-50">
+          <div id="settings-mobile-navigation" className="absolute top-10.5 left-0 z-50">
             <HamburgerContent className="max-h-100 rounded-lg border border-subtle pb-3" />
           </div>
         )}
@@ -44,6 +44,8 @@ export const SettingsMobileNav = observer(function SettingsMobileNav(props: Prop
           className="group z-50 shrink-0"
           icon={Menu}
           aria-label="Toggle settings navigation"
+          aria-expanded={!sidebarCollapsed}
+          aria-controls="settings-mobile-navigation"
           onClick={() => toggleSidebar()}
         />
       </div>
