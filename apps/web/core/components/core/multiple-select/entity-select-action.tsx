@@ -31,7 +31,11 @@ export const MultipleSelectEntityAction = observer(function MultipleSelectEntity
   return (
     <label
       htmlFor={checkboxId}
-      className={cn("grid size-3.5 shrink-0 place-items-center", disabled ? "cursor-not-allowed" : "cursor-pointer", className)}
+      className={cn(
+        "grid size-3.5 shrink-0 place-items-center",
+        disabled ? "cursor-not-allowed" : "cursor-pointer",
+        className
+      )}
     >
       <Checkbox
         id={checkboxId}
