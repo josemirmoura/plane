@@ -55,8 +55,14 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Check formatting of affected workspaces
-        run: pnpm turbo run check:format --affected
+      - name: Apply official formatter to affected workspaces
+        run: pnpm turbo run fix:format --affected
+
+      - name: Show formatting patch
+        run: |
+          echo '--- oxfmt patch begin ---'
+          git diff -- .
+          echo '--- oxfmt patch end ---'
 
       - name: Lint affected workspaces
         run: pnpm turbo run check:lint --affected
@@ -66,6 +72,9 @@ jobs:
 
       - name: Build affected workspaces
         run: pnpm turbo run build --affected
+
+      - name: Require committed formatting
+        run: git diff --exit-code
 
   storybook-mobile-screenshots:
     name: Storybook mobile screenshots
@@ -88,6 +97,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Generate UI styles
+        run: pnpm --filter @plane/ui exec postcss styles/globals.css -o styles/output.css
 
       - name: Build UI Storybook
         run: pnpm --filter @plane/ui build-storybook
