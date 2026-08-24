@@ -1,16 +1,20 @@
 name: Mobile web validation
 
 on:
-  push:
+  pull_request:
     branches:
-      - plane-mobile-web
+      - preview
+    types:
+      - opened
+      - synchronize
+      - reopened
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: mobile-web-validation-${{ github.ref }}
+  group: mobile-web-validation-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -20,16 +24,13 @@ jobs:
     timeout-minutes: 30
     env:
       NODE_OPTIONS: "--max-old-space-size=4096"
-      TURBO_SCM_BASE: origin/preview
-      TURBO_SCM_HEAD: HEAD
+      TURBO_SCM_BASE: ${{ github.event.pull_request.base.sha || 'origin/preview' }}
+      TURBO_SCM_HEAD: ${{ github.sha }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-
-      - name: Fetch preview base
-        run: git fetch origin preview:refs/remotes/origin/preview
 
       - name: Set up Node.js
         uses: actions/setup-node@v6
