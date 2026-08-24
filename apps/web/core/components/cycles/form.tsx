@@ -72,13 +72,13 @@ export function CycleForm(props: Props) {
   return (
     <form onSubmit={handleSubmit((formData) => handleFormSubmit(formData))}>
       <div className="space-y-5 p-5">
-        <div className="flex items-center gap-x-3">
+        <div className="flex flex-wrap items-center gap-3">
           {!status && (
             <Controller
               control={control}
               name="project_id"
               render={({ field: { value, onChange } }) => (
-                <div className="h-7">
+                <div className="h-8 md:h-7">
                   <ProjectDropdown
                     value={value}
                     onChange={(val) => {
@@ -96,7 +96,7 @@ export function CycleForm(props: Props) {
               )}
             />
           )}
-          <h3 className="text-18 font-medium text-secondary">
+          <h3 className="min-w-0 text-18 font-medium text-secondary">
             {status ? t("project_cycles.update_cycle") : t("project_cycles.create_cycle")}
           </h3>
         </div>
@@ -157,7 +157,7 @@ export function CycleForm(props: Props) {
                   render={({ field: { value: endDateValue, onChange: onChangeEndDate } }) => (
                     <DateRangeDropdown
                       buttonVariant="border-with-text"
-                      className="h-7"
+                      className="h-8 md:h-7"
                       minDate={new Date()}
                       value={{
                         from: getDate(startDateValue),
@@ -183,7 +183,7 @@ export function CycleForm(props: Props) {
           </div>
         </div>
       </div>
-      <div className="flex items-center justify-end gap-2 border-t-[0.5px] border-subtle px-5 py-4">
+      <div className="flex flex-wrap items-center justify-end gap-2 border-t-[0.5px] border-subtle px-5 py-4">
         <Button variant="secondary" size="lg" onClick={handleClose} tabIndex={getIndex("cancel")}>
           {t("common.cancel")}
         </Button>
