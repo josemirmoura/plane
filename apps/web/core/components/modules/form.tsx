@@ -83,13 +83,13 @@ export function ModuleForm(props: Props) {
   return (
     <form onSubmit={handleSubmit(handleCreateUpdateModule)}>
       <div className="space-y-5 p-5">
-        <div className="flex items-center gap-x-3">
+        <div className="flex flex-wrap items-center gap-3">
           {!status && (
             <Controller
               control={control}
               name="project_id"
               render={({ field: { value, onChange } }) => (
-                <div className="h-7">
+                <div className="h-8 md:h-7">
                   <ProjectDropdown
                     value={value}
                     onChange={(val) => {
@@ -107,7 +107,7 @@ export function ModuleForm(props: Props) {
               )}
             />
           )}
-          <h3 className="text-18 font-medium text-secondary">
+          <h3 className="min-w-0 text-18 font-medium text-secondary">
             {status ? t("common.update") : t("common.create")} {t("common.module").toLowerCase()}
           </h3>
         </div>
@@ -169,7 +169,7 @@ export function ModuleForm(props: Props) {
                   render={({ field: { value: endDateValue, onChange: onChangeEndDate } }) => (
                     <DateRangeDropdown
                       buttonVariant="border-with-text"
-                      className="h-7"
+                      className="h-8 md:h-7"
                       value={{
                         from: getDate(startDateValue),
                         to: getDate(endDateValue),
@@ -191,14 +191,14 @@ export function ModuleForm(props: Props) {
                 />
               )}
             />
-            <div className="h-7">
+            <div className="h-8 md:h-7">
               <ModuleStatusSelect control={control} error={errors.status} tabIndex={getIndex("status")} />
             </div>
             <Controller
               control={control}
               name="lead_id"
               render={({ field: { value, onChange } }) => (
-                <div className="h-7">
+                <div className="h-8 md:h-7">
                   <MemberDropdown
                     value={value}
                     onChange={onChange}
@@ -215,7 +215,7 @@ export function ModuleForm(props: Props) {
               control={control}
               name="member_ids"
               render={({ field: { value, onChange } }) => (
-                <div className="h-7">
+                <div className="h-8 md:h-7">
                   <MemberDropdown
                     value={value}
                     onChange={onChange}
@@ -232,7 +232,7 @@ export function ModuleForm(props: Props) {
           </div>
         </div>
       </div>
-      <div className="flex items-center justify-end gap-2 border-t-[0.5px] border-subtle px-5 py-4">
+      <div className="flex flex-wrap items-center justify-end gap-2 border-t-[0.5px] border-subtle px-5 py-4">
         <Button variant="secondary" size="lg" onClick={handleClose} tabIndex={getIndex("cancel")}>
           {t("cancel")}
         </Button>
