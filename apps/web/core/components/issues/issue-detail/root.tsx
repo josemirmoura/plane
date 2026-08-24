@@ -239,7 +239,7 @@ export const IssueDetailRoot = observer(function IssueDetailRoot(props: TIssueDe
         />
       ) : (
         <div className="flex h-full w-full overflow-hidden">
-          <div className="h-full w-full space-y-6 overflow-y-auto px-9 py-5">
+          <div className="h-full w-full space-y-6 overflow-y-auto px-4 py-4 sm:px-6 md:px-9 md:py-5">
             <IssueMainContent
               workspaceSlug={workspaceSlug}
               projectId={projectId}
