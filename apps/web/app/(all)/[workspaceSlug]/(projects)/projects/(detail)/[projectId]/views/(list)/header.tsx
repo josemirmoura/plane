@@ -8,6 +8,7 @@ import { observer } from "mobx-react";
 import { useParams } from "next/navigation";
 // ui
 import { PROJECT_VIEW_TRACKER_ELEMENTS } from "@plane/constants";
+import { useTranslation } from "@plane/i18n";
 import { Button } from "@plane/propel/button";
 import { ViewsIcon } from "@plane/propel/icons";
 import { Breadcrumbs, Header } from "@plane/ui";
@@ -25,40 +26,40 @@ export const ProjectViewsHeader = observer(function ProjectViewsHeader() {
   // store hooks
   const { toggleCreateViewModal } = useCommandPalette();
   const { loader } = useProject();
+  const { t } = useTranslation();
 
   return (
-    <>
-      <Header>
-        <Header.LeftItem>
-          <Breadcrumbs isLoading={loader === "init-loader"}>
-            <CommonProjectBreadcrumbs workspaceSlug={workspaceSlug?.toString()} projectId={projectId?.toString()} />
-            <Breadcrumbs.Item
-              component={
-                <BreadcrumbLink
-                  label="Views"
-                  href={`/${workspaceSlug}/projects/${projectId}/views/`}
-                  icon={<ViewsIcon className="h-4 w-4 text-tertiary" />}
-                  isLast
-                />
-              }
-              isLast
-            />
-          </Breadcrumbs>
-        </Header.LeftItem>
-        <Header.RightItem>
-          <ViewListHeader />
-          <div>
-            <Button
-              data-ph-element={PROJECT_VIEW_TRACKER_ELEMENTS.RIGHT_HEADER_ADD_BUTTON}
-              variant="primary"
-              size="lg"
-              onClick={() => toggleCreateViewModal(true)}
-            >
-              Add view
-            </Button>
-          </div>
-        </Header.RightItem>
-      </Header>
-    </>
+    <Header>
+      <Header.LeftItem>
+        <Breadcrumbs isLoading={loader === "init-loader"}>
+          <CommonProjectBreadcrumbs workspaceSlug={workspaceSlug?.toString()} projectId={projectId?.toString()} />
+          <Breadcrumbs.Item
+            component={
+              <BreadcrumbLink
+                label="Views"
+                href={`/${workspaceSlug}/projects/${projectId}/views/`}
+                icon={<ViewsIcon className="h-4 w-4 text-tertiary" />}
+                isLast
+              />
+            }
+            isLast
+          />
+        </Breadcrumbs>
+      </Header.LeftItem>
+      <Header.RightItem>
+        <ViewListHeader />
+        <div>
+          <Button
+            data-ph-element={PROJECT_VIEW_TRACKER_ELEMENTS.RIGHT_HEADER_ADD_BUTTON}
+            variant="primary"
+            size="lg"
+            onClick={() => toggleCreateViewModal(true)}
+          >
+            <span className="sm:hidden">{t("add")}</span>
+            <span className="hidden sm:inline">Add view</span>
+          </Button>
+        </div>
+      </Header.RightItem>
+    </Header>
   );
 });
