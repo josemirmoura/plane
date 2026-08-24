@@ -217,12 +217,12 @@ export const IssueBlock = observer(function IssueBlock(props: IssueBlockProps) {
                   }
                   disabled={issue.project_id === projectId}
                 >
-                  <div className="absolute left-1 grid w-3.5 flex-shrink-0 place-items-center">
+                  <div className="relative grid size-8 flex-shrink-0 place-items-center lg:absolute lg:left-1 lg:size-auto lg:w-3.5">
                     <MultipleSelectEntityAction
                       className={cn(
-                        "pointer-events-none opacity-0 transition-opacity group-hover/list-block:pointer-events-auto group-hover/list-block:opacity-100",
+                        "pointer-events-auto size-8 opacity-100 transition-opacity lg:pointer-events-none lg:size-3.5 lg:opacity-0 lg:group-hover/list-block:pointer-events-auto lg:group-hover/list-block:opacity-100",
                         {
-                          "pointer-events-auto opacity-100": isIssueSelected,
+                          "lg:pointer-events-auto lg:opacity-100": isIssueSelected,
                         }
                       )}
                       groupId={groupId}
