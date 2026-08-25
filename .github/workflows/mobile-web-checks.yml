@@ -86,8 +86,11 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - name: Checkout code
+      - name: Checkout branch
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
 
       - name: Validate shell syntax
         run: bash -n scripts/mobile-staging-bootstrap-env.sh scripts/mobile-staging-preflight.sh
@@ -102,14 +105,22 @@ jobs:
       - name: ShellCheck staging scripts
         run: shellcheck scripts/mobile-staging-bootstrap-env.sh scripts/mobile-staging-preflight.sh
 
-      - name: Prepare disposable CI env files
+      - name: Exercise staging env bootstrap
+        env:
+          STAGE_ROOT: ${{ github.workspace }}
+          STAGING_ORIGIN: http://127.0.0.1:8180
+          LISTEN_HTTP_PORT: "8180"
+          LISTEN_HTTPS_PORT: "8443"
+        run: bash scripts/mobile-staging-bootstrap-env.sh
+
+      - name: Exercise staging safety preflight
+        env:
+          STAGE_ROOT: ${{ github.workspace }}
+          PROD_ROOT: /tmp/plane-mobile-prod-sentinel
+          EXPECTED_BRANCH: plane-mobile-app-ux
         run: |
-          cp .env.example .env
-          cp apps/api/.env.example apps/api/.env
-          cp apps/web/.env.example apps/web/.env
-          cp apps/admin/.env.example apps/admin/.env
-          cp apps/space/.env.example apps/space/.env
-          cp apps/live/.env.example apps/live/.env
+          mkdir -p "$PROD_ROOT"
+          bash scripts/mobile-staging-preflight.sh
 
       - name: Validate isolated Compose config
         run: |
