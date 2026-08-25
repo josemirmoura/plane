@@ -1,0 +1,50 @@
+# Plane CE mobile staging override
+#
+# Use only together with docker-compose.yml and an isolated Compose project name:
+#   docker compose -p plane-mobile-test \
+#     -f docker-compose.yml \
+#     -f docker-compose.mobile-staging.yml \
+#     up -d --build
+#
+# The upstream compose file defines fixed container_name values. This override
+# prevents collisions with an existing Plane CE production stack on the same host.
+
+services:
+  web:
+    container_name: plane-mobile-test-web
+
+  admin:
+    container_name: plane-mobile-test-admin
+
+  space:
+    container_name: plane-mobile-test-space
+
+  api:
+    container_name: plane-mobile-test-api
+
+  worker:
+    container_name: plane-mobile-test-bgworker
+
+  beat-worker:
+    container_name: plane-mobile-test-beatworker
+
+  migrator:
+    container_name: plane-mobile-test-migrator
+
+  live:
+    container_name: plane-mobile-test-live
+
+  plane-db:
+    container_name: plane-mobile-test-db
+
+  plane-redis:
+    container_name: plane-mobile-test-redis
+
+  plane-mq:
+    container_name: plane-mobile-test-mq
+
+  plane-minio:
+    container_name: plane-mobile-test-minio
+
+  proxy:
+    container_name: plane-mobile-test-proxy
