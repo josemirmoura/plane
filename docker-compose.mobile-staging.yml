@@ -33,6 +33,8 @@ services:
 
   live:
     container_name: plane-mobile-test-live
+    env_file:
+      - ./apps/live/.env
 
   plane-db:
     container_name: plane-mobile-test-db
@@ -48,3 +50,5 @@ services:
 
   proxy:
     container_name: plane-mobile-test-proxy
+    env_file:
+      - ./.env
