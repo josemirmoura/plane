@@ -103,7 +103,7 @@ export const MobileBottomNavigation = observer(function MobileBottomNavigation()
         }}
         disabled={isCreateDisabled}
         className={cn(
-          "shadow-md absolute right-4 -top-12 flex size-11 items-center justify-center rounded-full bg-accent-primary text-white transition-transform",
+          "shadow-md absolute -top-12 right-4 flex size-11 items-center justify-center rounded-full bg-accent-primary text-white transition-transform",
           "active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
         )}
         aria-label="Create work item"
