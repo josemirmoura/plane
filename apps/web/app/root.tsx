@@ -24,6 +24,7 @@ import globalStyles from "@/styles/globals.css?url";
 import type { Route } from "./+types/root";
 // components
 import { LogoSpinner } from "@/components/common/logo-spinner";
+import { MobileWebRedirect } from "@/components/mobile-community/mobile-web-redirect";
 // lib
 import { isStaleAssetError, recoverFromStaleAsset } from "@/lib/stale-asset-error";
 // local
@@ -125,6 +126,7 @@ export const meta: Route.MetaFunction = () => [
 export default function Root() {
   return (
     <AppProvider>
+      <MobileWebRedirect />
       <div className={cn("relative flex h-screen w-full flex-col overflow-hidden bg-canvas", "desktop-app-container")}>
         <main className="relative h-full w-full overflow-hidden">
           <Outlet />
