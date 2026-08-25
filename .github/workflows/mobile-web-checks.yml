@@ -81,6 +81,64 @@ jobs:
       - name: Require committed formatting
         run: git diff --exit-code
 
+  staging-safety-assets:
+    name: staging scripts and compose isolation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Validate shell syntax
+        run: bash -n scripts/mobile-staging-bootstrap-env.sh scripts/mobile-staging-preflight.sh
+
+      - name: Install ShellCheck if needed
+        run: |
+          if ! command -v shellcheck >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y shellcheck
+          fi
+
+      - name: ShellCheck staging scripts
+        run: shellcheck scripts/mobile-staging-bootstrap-env.sh scripts/mobile-staging-preflight.sh
+
+      - name: Prepare disposable CI env files
+        run: |
+          cp .env.example .env
+          cp apps/api/.env.example apps/api/.env
+          cp apps/web/.env.example apps/web/.env
+          cp apps/admin/.env.example apps/admin/.env
+          cp apps/space/.env.example apps/space/.env
+          cp apps/live/.env.example apps/live/.env
+
+      - name: Validate isolated Compose config
+        run: |
+          docker compose \
+            -p plane-mobile-test \
+            -f docker-compose.yml \
+            -f docker-compose.mobile-staging.yml \
+            config > /tmp/plane-mobile-staging-compose.yml
+
+          expected=(
+            plane-mobile-test-web
+            plane-mobile-test-admin
+            plane-mobile-test-space
+            plane-mobile-test-api
+            plane-mobile-test-bgworker
+            plane-mobile-test-beatworker
+            plane-mobile-test-migrator
+            plane-mobile-test-live
+            plane-mobile-test-db
+            plane-mobile-test-redis
+            plane-mobile-test-mq
+            plane-mobile-test-minio
+            plane-mobile-test-proxy
+          )
+
+          for name in "${expected[@]}"; do
+            grep -Fq "container_name: $name" /tmp/plane-mobile-staging-compose.yml
+          done
+
   storybook-mobile-screenshots:
     name: Storybook mobile screenshots
     runs-on: ubuntu-latest
