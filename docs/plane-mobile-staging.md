@@ -98,14 +98,14 @@ If port 8180 is not reachable externally, inspect the host firewall/security gro
 
 ## Phase 3: create staging-only environment files
 
-From the staging root:
+Run this only for a new/disposable staging environment. If staging `.env` files already exist from a previous valid deployment, preserve them and continue to the preflight.
 
 ```bash
 cd /opt/hubbr.plane-mobile-test
 STAGING_ORIGIN="$STAGING_ORIGIN" \
 LISTEN_HTTP_PORT=8180 \
 LISTEN_HTTPS_PORT=8443 \
-./scripts/mobile-staging-bootstrap-env.sh
+bash scripts/mobile-staging-bootstrap-env.sh
 ```
 
 This script creates fresh environment files from repository templates and generates staging-only credentials for PostgreSQL, RabbitMQ, MinIO, Django and Plane Live. It does not copy production data or secrets.
@@ -120,7 +120,7 @@ Run:
 
 ```bash
 cd /opt/hubbr.plane-mobile-test
-./scripts/mobile-staging-preflight.sh
+bash scripts/mobile-staging-preflight.sh
 ```
 
 The preflight must pass before any container is built or started. It verifies:
@@ -202,7 +202,7 @@ cd /opt/hubbr.plane-mobile-test
 git status --short
 git fetch origin plane-mobile-app-ux
 git merge --ff-only origin/plane-mobile-app-ux
-./scripts/mobile-staging-preflight.sh
+bash scripts/mobile-staging-preflight.sh
 
 docker compose \
   -p plane-mobile-test \
@@ -251,6 +251,7 @@ M1 is accepted only when:
 - GitHub `React Doctor` is green;
 - GitHub `Mobile web validation` format/lint/types/build is green;
 - responsive Storybook screenshots complete;
+- staging scripts/bootstrap/preflight pass CI;
 - staging starts without production collisions;
 - physical Android navigation and quick actions work;
 - desktop behavior remains normal.
