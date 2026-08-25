@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - preview
+      - plane-mobile-web
     types:
       - opened
       - synchronize
@@ -79,6 +80,104 @@ jobs:
 
       - name: Require committed formatting
         run: git diff --exit-code
+
+  staging-safety-assets:
+    name: staging scripts and compose isolation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
+          fetch-depth: 0
+
+      - name: Validate shell syntax
+        run: bash -n scripts/mobile-staging-bootstrap-env.sh scripts/mobile-staging-preflight.sh
+
+      - name: Install ShellCheck if needed
+        run: |
+          if ! command -v shellcheck >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y shellcheck
+          fi
+
+      - name: ShellCheck staging scripts
+        run: shellcheck scripts/mobile-staging-bootstrap-env.sh scripts/mobile-staging-preflight.sh
+
+      - name: Prepare real-topology staging fixture
+        run: |
+          rm -rf /tmp/hubbr.plane /tmp/hubbr.plane-mobile-test
+          mkdir -p /tmp/hubbr.plane
+          cp -a "$GITHUB_WORKSPACE" /tmp/hubbr.plane-mobile-test
+
+      - name: Exercise staging env bootstrap
+        working-directory: /tmp/hubbr.plane-mobile-test
+        env:
+          STAGE_ROOT: /tmp/hubbr.plane-mobile-test
+          STAGING_ORIGIN: http://127.0.0.1:8180
+          LISTEN_HTTP_PORT: "8180"
+          LISTEN_HTTPS_PORT: "8443"
+        run: bash scripts/mobile-staging-bootstrap-env.sh
+
+      - name: Exercise staging safety preflight with shared path prefix
+        working-directory: /tmp/hubbr.plane-mobile-test
+        env:
+          STAGE_ROOT: /tmp/hubbr.plane-mobile-test
+          PROD_ROOT: /tmp/hubbr.plane
+          EXPECTED_BRANCH: plane-mobile-app-ux
+        run: bash scripts/mobile-staging-preflight.sh
+
+      - name: Validate isolated Compose config and service env injection
+        working-directory: /tmp/hubbr.plane-mobile-test
+        run: |
+          docker compose \
+            -p plane-mobile-test \
+            -f docker-compose.yml \
+            -f docker-compose.mobile-staging.yml \
+            config > /tmp/plane-mobile-staging-compose.yml
+
+          expected=(
+            plane-mobile-test-web
+            plane-mobile-test-admin
+            plane-mobile-test-space
+            plane-mobile-test-api
+            plane-mobile-test-bgworker
+            plane-mobile-test-beatworker
+            plane-mobile-test-migrator
+            plane-mobile-test-live
+            plane-mobile-test-db
+            plane-mobile-test-redis
+            plane-mobile-test-mq
+            plane-mobile-test-minio
+            plane-mobile-test-proxy
+          )
+
+          for name in "${expected[@]}"; do
+            grep -Fq "container_name: $name" /tmp/plane-mobile-staging-compose.yml
+          done
+
+          awk '/^  live:$/ {inside=1; next} inside && /^  [[:alnum:]_-]+:$/ {exit} inside' \
+            /tmp/plane-mobile-staging-compose.yml | grep -Fq 'LIVE_SERVER_SECRET_KEY:'
+
+          awk '/^  proxy:$/ {inside=1; next} inside && /^  [[:alnum:]_-]+:$/ {exit} inside' \
+            /tmp/plane-mobile-staging-compose.yml | grep -Fq 'SITE_ADDRESS:'
+
+      - name: Validate CE Caddyfile ordering and syntax
+        working-directory: /tmp/hubbr.plane-mobile-test
+        run: |
+          first_nonempty="$(awk 'NF {print; exit}' apps/proxy/Caddyfile.ce)"
+          test "$first_nonempty" = "{"
+
+          docker run --rm \
+            -e FILE_SIZE_LIMIT=5242880 \
+            -e BUCKET_NAME=uploads \
+            -e SITE_ADDRESS=:80 \
+            -e CERT_EMAIL= \
+            -e CERT_ACME_DNS= \
+            -e TRUSTED_PROXIES=0.0.0.0/0 \
+            -v "$PWD/apps/proxy/Caddyfile.ce:/etc/caddy/Caddyfile:ro" \
+            caddy:2.10-alpine caddy validate --config /etc/caddy/Caddyfile
 
   storybook-mobile-screenshots:
     name: Storybook mobile screenshots

@@ -46,39 +46,48 @@ export const TopNavigationRoot = observer(function TopNavigationRoot() {
 
   return (
     <div
-      className={cn("z-[27] flex min-h-10 w-full items-center bg-canvas px-3.5 transition-all duration-300", {
-        "px-2": !showLabel,
-      })}
+      className={cn(
+        "z-[27] flex min-h-9 w-full items-center bg-canvas px-2 transition-all duration-300 md:min-h-10 md:px-3.5",
+        {
+          "md:px-2": !showLabel,
+        }
+      )}
     >
       {/* Workspace Menu */}
-      <div className="flex-1 shrink-0">
+      <div className="min-w-0 flex-1 shrink-0">
         <WorkspaceMenuRoot variant="top-navigation" />
       </div>
-      {/* Power K Search */}
-      <div className="shrink-0">
+      {/* Desktop Power K Search. Mobile search lives in the bottom navigation. */}
+      <div className="hidden shrink-0 md:block">
         <TopNavPowerK />
       </div>
       {/* Additional Actions */}
       <div className="flex flex-1 shrink-0 items-center justify-end gap-1">
-        <Tooltip tooltipContent="Inbox" position="bottom">
-          <AppSidebarItem
-            variant="link"
-            item={{
-              href: `/${workspaceSlug?.toString()}/notifications/`,
-              icon: (
-                <div className="relative">
-                  <InboxIcon className="size-5" />
-                  {totalNotifications > 0 && (
-                    <span className="absolute top-0 right-0 size-2 rounded-full bg-danger-primary" />
-                  )}
-                </div>
-              ),
-              isActive: pathname?.includes("/notifications/"),
-            }}
-          />
-        </Tooltip>
-        <HelpMenuRoot />
-        <StarUsOnGitHubLink />
+        <div className="hidden md:block">
+          <Tooltip tooltipContent="Inbox" position="bottom">
+            <AppSidebarItem
+              variant="link"
+              item={{
+                href: `/${workspaceSlug?.toString()}/notifications/`,
+                icon: (
+                  <div className="relative">
+                    <InboxIcon className="size-5" />
+                    {totalNotifications > 0 && (
+                      <span className="absolute top-0 right-0 size-2 rounded-full bg-danger-primary" />
+                    )}
+                  </div>
+                ),
+                isActive: pathname?.includes("/notifications/"),
+              }}
+            />
+          </Tooltip>
+        </div>
+        <div className="hidden md:block">
+          <HelpMenuRoot />
+        </div>
+        <div className="hidden md:block">
+          <StarUsOnGitHubLink />
+        </div>
         <div className="flex size-8 items-center justify-center rounded-md hover:bg-layer-1-hover">
           <UserMenuRoot />
         </div>
