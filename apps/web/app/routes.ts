@@ -16,7 +16,13 @@ import { mergeRoutes } from "./routes/helper";
  */
 const mergedRoutes: RouteConfigEntry[] = mergeRoutes(coreRoutes, extendedRoutes);
 
+// The Community mobile web experience intentionally lives outside the desktop
+// route tree so desktop layouts, navigation, and behavior remain untouched.
+const mobileCommunityRoutes: RouteConfigEntry[] = [
+  route("app/:workspaceSlug/*", "./(mobile-community)/page.tsx"),
+];
+
 // Add catch-all route at the end (404 handler)
-const routes: RouteConfigEntry[] = [...mergedRoutes, route("*", "./not-found.tsx")];
+const routes: RouteConfigEntry[] = [...mobileCommunityRoutes, ...mergedRoutes, route("*", "./not-found.tsx")];
 
 export default routes;
