@@ -6,6 +6,7 @@
 
 "use client";
 
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { useParams, usePathname } from "next/navigation";
 import { BellIcon, BriefcaseBusinessIcon, FolderKanbanIcon, HouseIcon, PlusIcon, SearchIcon } from "lucide-react";
@@ -22,7 +23,7 @@ import { useUser, useUserPermissions } from "@/hooks/store/user";
 type TMobileNavItemProps = {
   href?: string;
   label: string;
-  icon: React.ReactNode;
+  icon: ReactNode;
   isActive?: boolean;
   onClick?: () => void;
 };
@@ -95,7 +96,7 @@ export const MobileBottomNavigation = observer(function MobileBottomNavigation()
         onClick={() => toggleCreateIssueModal(true)}
         disabled={isCreateDisabled}
         className={cn(
-          "shadow-md absolute right-4 -top-12 flex size-11 items-center justify-center rounded-full bg-accent-primary text-on-color transition-transform",
+          "shadow-md absolute right-4 -top-12 flex size-11 items-center justify-center rounded-full bg-accent-primary text-white transition-transform",
           "active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
         )}
         aria-label="Create work item"
