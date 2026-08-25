@@ -7,6 +7,7 @@ COMPOSE_PROJECT="${COMPOSE_PROJECT:-plane-mobile-test}"
 BASE_COMPOSE="${BASE_COMPOSE:-docker-compose.yml}"
 STAGING_COMPOSE="${STAGING_COMPOSE:-docker-compose.mobile-staging.yml}"
 EXPECTED_BRANCH="${EXPECTED_BRANCH:-plane-mobile-app-ux}"
+STAGING_PROXY_CONTAINER="${STAGING_PROXY_CONTAINER:-plane-mobile-test-proxy}"
 
 fail() {
   printf 'ERROR: %s\n' "$*" >&2
@@ -21,6 +22,16 @@ read_env_value() {
   local file="$1"
   local key="$2"
   sed -n "s/^${key}=//p" "$file" | tail -n 1 | tr -d '"' | tr -d "'"
+}
+
+port_is_listening() {
+  local port="$1"
+  ss -ltnH | awk '{print $4}' | grep -Eq "(^|:)${port}$"
+}
+
+port_belongs_to_staging_proxy() {
+  local port="$1"
+  docker ps --filter "name=^/${STAGING_PROXY_CONTAINER}$" --format '{{.Ports}}' | grep -Eq "${port}->"
 }
 
 command -v docker >/dev/null 2>&1 || fail "docker is not installed"
@@ -62,17 +73,17 @@ if [[ -f "$RESOLVED_PROD_ROOT/.env" ]]; then
 fi
 
 if command -v ss >/dev/null 2>&1; then
-  if ss -ltnH | awk '{print $4}' | grep -Eq "(^|:)${HTTP_PORT}$"; then
-    fail "staging HTTP port $HTTP_PORT is already listening on the host"
+  if port_is_listening "$HTTP_PORT" && ! port_belongs_to_staging_proxy "$HTTP_PORT"; then
+    fail "staging HTTP port $HTTP_PORT is already owned by another process/container"
   fi
-  if ss -ltnH | awk '{print $4}' | grep -Eq "(^|:)${HTTPS_PORT}$"; then
-    fail "staging HTTPS port $HTTPS_PORT is already listening on the host"
+  if port_is_listening "$HTTPS_PORT" && ! port_belongs_to_staging_proxy "$HTTPS_PORT"; then
+    fail "staging HTTPS port $HTTPS_PORT is already owned by another process/container"
   fi
 fi
-ok "staging ports $HTTP_PORT/$HTTPS_PORT do not collide"
+ok "staging ports $HTTP_PORT/$HTTPS_PORT are free or already owned by the staging proxy"
 
 COMPOSE_CMD=(docker compose -p "$COMPOSE_PROJECT" -f "$BASE_COMPOSE" -f "$STAGING_COMPOSE")
-CONFIG="$(${COMPOSE_CMD[@]} config)"
+CONFIG="$("${COMPOSE_CMD[@]}" config)"
 
 EXPECTED_CONTAINERS=(
   plane-mobile-test-web
