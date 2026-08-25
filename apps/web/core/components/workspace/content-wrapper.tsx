@@ -30,9 +30,7 @@ export const WorkspaceContentWrapper = observer(function WorkspaceContentWrapper
         <div
           className={cn(
             "relative size-full flex-grow overflow-hidden pr-2 pl-2 transition-all duration-300 ease-in-out",
-            shouldRenderAppRail
-              ? "pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-2 md:pl-0!"
-              : "pb-2"
+            shouldRenderAppRail ? "pb-[calc(4.5rem+env(safe-area-inset-bottom))] md:pb-2 md:pl-0!" : "pb-2"
           )}
         >
           {children}
