@@ -34,6 +34,16 @@ port_belongs_to_staging_proxy() {
   docker ps --filter "name=^/${STAGING_PROXY_CONTAINER}$" --format '{{.Ports}}' | grep -Eq "${port}->"
 }
 
+config_references_production_root() {
+  local config="$1"
+  local prod_root="$2"
+
+  # Match the production root only as a complete path boundary. A staging path
+  # such as /opt/hubbr.plane-mobile-test intentionally shares the same prefix
+  # and must not be treated as a production reference.
+  grep -Fq "${prod_root}/" <<<"$config" || grep -Fxq "$prod_root" <<<"$config"
+}
+
 command -v docker >/dev/null 2>&1 || fail "docker is not installed"
 docker compose version >/dev/null 2>&1 || fail "docker compose plugin is unavailable"
 
@@ -105,7 +115,7 @@ for name in "${EXPECTED_CONTAINERS[@]}"; do
   grep -Fq "container_name: $name" <<<"$CONFIG" || fail "compose config does not isolate container $name"
 done
 
-if grep -Fq "$RESOLVED_PROD_ROOT" <<<"$CONFIG"; then
+if config_references_production_root "$CONFIG" "$RESOLVED_PROD_ROOT"; then
   fail "compose config references production root $RESOLVED_PROD_ROOT"
 fi
 
