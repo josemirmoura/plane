@@ -25,6 +25,8 @@ Deploy `plane-mobile-app-ux` beside the existing Plane CE production instance so
 6. Never commit `.env` files or generated secrets.
 7. Do not merge PR #2 or replace the production branch as part of staging validation.
 8. If the real production topology differs materially from these assumptions, stop before any write operation and report the difference.
+9. Do not use production credentials on a public HTTP staging endpoint. Use disposable QA-only credentials until staging is protected by TLS or a private network.
+10. Physical QA must run against the same Git commit that is recorded in PR #2. If emergency local staging commits were created, first port their fixes to GitHub, then realign staging to the PR head before accepting QA results.
 
 ## Phase 0: read-only host inspection
 
@@ -61,7 +63,7 @@ git clone --branch plane-mobile-app-ux --single-branch \
   /opt/hubbr.plane-mobile-test
 ```
 
-If the staging directory already exists, do not delete it. Inspect it and update only by fast-forward:
+If the staging directory already exists, do not delete it. Inspect it and update only by fast-forward when the local branch has no staging-only commits:
 
 ```bash
 cd /opt/hubbr.plane-mobile-test
@@ -71,6 +73,8 @@ git fetch origin plane-mobile-app-ux
 git checkout plane-mobile-app-ux
 git merge --ff-only origin/plane-mobile-app-ux
 ```
+
+If staging contains emergency local commits that have already been ported to GitHub, do not merge divergent histories just to preserve those duplicate commits. First verify the patches are represented upstream and that `.env` files are ignored/preserved; then realign only the disposable staging source tree to `origin/plane-mobile-app-ux`. Never perform such a reset in `/opt/hubbr.plane`.
 
 Confirm:
 
@@ -95,6 +99,8 @@ export STAGING_ORIGIN='http://PUBLIC_VPS_IP:8180'
 Replace `PUBLIC_VPS_IP` with the actual reachable VPS address. Do not put a placeholder into `.env`.
 
 If port 8180 is not reachable externally, inspect the host firewall/security group before changing anything. Do not alter the production reverse proxy merely to make staging work.
+
+A public `http://` endpoint is acceptable only for disposable functional QA. Never reuse production passwords or sensitive data there. Prefer a private tunnel or TLS before broader testing.
 
 ## Phase 3: create staging-only environment files
 
@@ -130,7 +136,7 @@ The preflight must pass before any container is built or started. It verifies:
 - the Git working tree is clean;
 - staging ports do not collide with production or another process;
 - all fixed upstream `container_name` values have staging-specific overrides;
-- the effective Compose configuration does not reference `/opt/hubbr.plane`.
+- the effective Compose configuration does not reference `/opt/hubbr.plane` as a complete production path while correctly allowing the staging prefix `/opt/hubbr.plane-mobile-test`.
 
 If any check fails, do not bypass it. Fix the staging configuration or report the mismatch.
 
@@ -172,10 +178,10 @@ Check the HTTP entry point from the VPS:
 
 ```bash
 curl -I http://127.0.0.1:8180/
-curl -fsS http://127.0.0.1:8180/api/health/ || true
+curl -fsS http://127.0.0.1:8180/api/instances/
 ```
 
-If the health endpoint differs in this Plane version, inspect API routes rather than changing production.
+`/api/instances/` is a known public validation endpoint for the deployed CE version. Do not assume `/api/health/` exists.
 
 ## Phase 7: Android QA
 
@@ -251,9 +257,10 @@ M1 is accepted only when:
 - GitHub `React Doctor` is green;
 - GitHub `Mobile web validation` format/lint/types/build is green;
 - responsive Storybook screenshots complete;
-- staging scripts/bootstrap/preflight pass CI;
+- staging scripts/bootstrap/preflight pass CI against the real shared-prefix topology;
+- Caddy configuration validates;
 - staging starts without production collisions;
-- physical Android navigation and quick actions work;
+- physical Android navigation and quick actions work on the same commit recorded by PR #2;
 - desktop behavior remains normal.
 
 Only then continue with M2, the mobile Home experience.
