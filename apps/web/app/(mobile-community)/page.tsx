@@ -475,7 +475,7 @@ function LoadingRows() {
 }
 
 function ErrorCard({ message }: { message: string }) {
-  return <div className="rounded-2xl border border-danger-subtle bg-danger-subtle/30 p-4 text-sm text-primary">{message}</div>;
+  return <div className="rounded-2xl border border-subtle bg-layer-1 p-4 text-sm text-primary">{message}</div>;
 }
 
 function ProjectView({ workspaceSlug, projectId, section, entity, go, back }: { workspaceSlug: string; projectId: string; section?: string; entity?: string; go: (path: string) => void; back: () => void }) {
@@ -706,7 +706,7 @@ function PropertyButton({ label, value, icon, onClick }: { label: string; value:
 }
 
 function OptionList({ items, selected, onSelect }: { items: MobileRecord[]; selected?: string; onSelect: (item: MobileRecord) => void }) {
-  return <div className="overflow-hidden rounded-2xl border border-subtle">{items.map((item, index) => { const id = entityId(item); return <button key={`${id}-${index}`} type="button" onClick={() => onSelect(item)} className={cx("flex min-h-13 w-full items-center gap-3 px-3 py-2.5 text-left active:bg-layer-1", index ? "border-t border-subtle" : "")}><div className="flex size-9 items-center justify-center rounded-xl bg-layer-1 text-secondary"><Circle className="size-4" /></div><span className="min-w-0 flex-1 truncate text-sm font-medium capitalize text-primary">{entityName(item)}</span>{selected === id ? <Check className="size-5 text-accent-primary" /> : null}</button>; })}</div>;
+  return <div className="overflow-hidden rounded-2xl border border-subtle">{items.map((item, index) => { const id = entityId(item); return <button key={`${id}-${index}`} type="button" onClick={() => onSelect(item)} className={cx("flex min-h-[52px] w-full items-center gap-3 px-3 py-2.5 text-left active:bg-layer-1", index ? "border-t border-subtle" : "")}><div className="flex size-9 items-center justify-center rounded-xl bg-layer-1 text-secondary"><Circle className="size-4" /></div><span className="min-w-0 flex-1 truncate text-sm font-medium capitalize text-primary">{entityName(item)}</span>{selected === id ? <Check className="size-5 text-accent-primary" /> : null}</button>; })}</div>;
 }
 
 function SettingsView({ workspaceSlug, data, onWorkspaceUpdate, back }: { workspaceSlug: string; data: ShellData; onWorkspaceUpdate: (workspace: MobileRecord) => void; back: () => void }) {
@@ -738,7 +738,8 @@ function SettingsView({ workspaceSlug, data, onWorkspaceUpdate, back }: { worksp
     window.location.assign(mobilePathToDesktop(window.location.pathname));
   };
 
-  const userName = String(data.user?.display_name ?? `${data.user?.first_name ?? ""} ${data.user?.last_name ?? ""}`.trim() || data.user?.email || "Profile");
+  const derivedUserName = `${data.user?.first_name ?? ""} ${data.user?.last_name ?? ""}`.trim();
+  const userName = String(data.user?.display_name ?? (derivedUserName || data.user?.email || "Profile"));
   return (
     <div className="min-h-full"><SubHeader title="Settings" onBack={back} /><div className="space-y-6 px-4 py-5">
       <section className="flex items-center gap-3 rounded-2xl border border-subtle bg-surface-1 p-4"><div className="flex size-12 items-center justify-center rounded-full bg-layer-1 text-sm font-semibold text-secondary">{initials(userName)}</div><div className="min-w-0"><p className="truncate text-base font-semibold text-primary">{userName}</p><p className="truncate text-sm text-tertiary">{data.user?.email}</p></div></section>
