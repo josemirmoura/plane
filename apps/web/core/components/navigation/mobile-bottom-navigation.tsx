@@ -15,6 +15,7 @@ import { observer } from "mobx-react";
 import { EUserPermissions, EUserPermissionsLevel } from "@plane/constants";
 import { cn } from "@plane/utils";
 // hooks
+import { useAppTheme } from "@/hooks/store/use-app-theme";
 import { useCommandPalette } from "@/hooks/store/use-command-palette";
 import { usePowerK } from "@/hooks/store/use-power-k";
 import { useProject } from "@/hooks/store/use-project";
@@ -44,7 +45,7 @@ function MobileNavItem({ href, label, icon, isActive = false, onClick }: TMobile
 
   if (href) {
     return (
-      <Link href={href} className={className} aria-current={isActive ? "page" : undefined}>
+      <Link href={href} className={className} aria-current={isActive ? "page" : undefined} onClick={onClick}>
         {content}
       </Link>
     );
@@ -62,6 +63,7 @@ export const MobileBottomNavigation = observer(function MobileBottomNavigation()
   const pathname = usePathname();
   const slug = workspaceSlug?.toString();
 
+  const { toggleSidebar } = useAppTheme();
   const { toggleCreateIssueModal } = useCommandPalette();
   const { togglePowerKModal } = usePowerK();
   const { joinedProjectIds } = useProject();
@@ -86,14 +88,19 @@ export const MobileBottomNavigation = observer(function MobileBottomNavigation()
   const isWorkItemsActive = !!currentUser?.id && pathname.startsWith(workItemsHref);
   const isInboxActive = pathname.startsWith(inboxHref);
 
+  const closeMobileSidebar = () => toggleSidebar(true);
+
   return (
     <nav
-      className="absolute inset-x-0 bottom-0 z-[45] border-t border-subtle bg-surface-1/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden"
+      className="absolute inset-x-0 bottom-0 z-[45] border-t border-subtle bg-surface-1 pb-[env(safe-area-inset-bottom)] md:hidden"
       aria-label="Mobile workspace navigation"
     >
       <button
         type="button"
-        onClick={() => toggleCreateIssueModal(true)}
+        onClick={() => {
+          closeMobileSidebar();
+          toggleCreateIssueModal(true);
+        }}
         disabled={isCreateDisabled}
         className={cn(
           "shadow-md absolute right-4 -top-12 flex size-11 items-center justify-center rounded-full bg-accent-primary text-white transition-transform",
@@ -110,29 +117,36 @@ export const MobileBottomNavigation = observer(function MobileBottomNavigation()
           label="Home"
           icon={<HouseIcon className="size-[18px]" />}
           isActive={isHomeActive}
+          onClick={closeMobileSidebar}
         />
         <MobileNavItem
           href={projectsHref}
           label="Projects"
           icon={<FolderKanbanIcon className="size-[18px]" />}
           isActive={isProjectsActive}
+          onClick={closeMobileSidebar}
         />
         <MobileNavItem
           href={workItemsHref}
           label="Work items"
           icon={<BriefcaseBusinessIcon className="size-[18px]" />}
           isActive={isWorkItemsActive}
+          onClick={closeMobileSidebar}
         />
         <MobileNavItem
           href={inboxHref}
           label="Inbox"
           icon={<BellIcon className="size-[18px]" />}
           isActive={isInboxActive}
+          onClick={closeMobileSidebar}
         />
         <MobileNavItem
           label="Search"
           icon={<SearchIcon className="size-[18px]" />}
-          onClick={() => togglePowerKModal(true)}
+          onClick={() => {
+            closeMobileSidebar();
+            togglePowerKModal(true);
+          }}
         />
       </div>
     </nav>
