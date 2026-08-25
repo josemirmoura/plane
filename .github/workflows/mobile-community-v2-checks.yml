@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: mobile-community-v2-${{ github.ref }}
@@ -20,42 +20,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Normalize generated mobile source
-        shell: bash
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p = Path('apps/web/app/(mobile-community)/page.tsx')
-          s = p.read_text()
-          s = s.replace(
-              'className="rounded-2xl border border-danger-subtle bg-danger-subtle/30 p-4 text-sm text-primary"',
-              'className="rounded-2xl border border-subtle bg-layer-1 p-4 text-sm text-primary"',
-          )
-          s = s.replace(
-              'className={cx("flex min-h-13 w-full items-center gap-3 px-3 py-2.5 text-left active:bg-layer-1",',
-              'className={cx("flex min-h-[52px] w-full items-center gap-3 px-3 py-2.5 text-left active:bg-layer-1",',
-          )
-          bad = '  const userName = String(data.user?.display_name ?? `${data.user?.first_name ?? ""} ${data.user?.last_name ?? ""}`.trim() || data.user?.email || "Profile");'
-          good = '  const derivedUserName = `${data.user?.first_name ?? ""} ${data.user?.last_name ?? ""}`.trim();\n  const userName = String(data.user?.display_name ?? (derivedUserName || data.user?.email || "Profile"));'
-          s = s.replace(bad, good)
-          p.write_text(s)
-          PY
-
-      - name: Persist normalization
-        shell: bash
-        run: |
-          if git diff --quiet -- 'apps/web/app/(mobile-community)/page.tsx'; then
-            echo 'No normalization commit needed.'
-          else
-            git config user.name 'github-actions[bot]'
-            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git add 'apps/web/app/(mobile-community)/page.tsx'
-            git commit -m 'fix(mobile): normalize community mobile source [skip ci]'
-            git push origin HEAD:plane-ce-mobile-web-v2
-          fi
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -69,25 +33,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Typecheck web
-        id: typecheck
-        shell: bash
-        run: |
-          set +e
-          pnpm --filter web check:types 2>&1 | tee /tmp/mobile-typecheck.log
-          status=${PIPESTATUS[0]}
-          if [ "$status" -ne 0 ]; then
-            mkdir -p docs/diagnostics
-            cp /tmp/mobile-typecheck.log docs/diagnostics/mobile-typecheck.log
-            git config user.name 'github-actions[bot]'
-            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git add docs/diagnostics/mobile-typecheck.log
-            if ! git diff --cached --quiet; then
-              git commit -m 'ci(mobile): capture typecheck diagnostics [skip ci]'
-              git push origin HEAD:plane-ce-mobile-web-v2
-            fi
-            exit "$status"
-          fi
+      - name: Typecheck web and dependencies
+        run: pnpm exec turbo run check:types --filter=web
 
-      - name: Build web
-        run: pnpm --filter web build
+      - name: Build web and dependencies
+        run: pnpm exec turbo run build --filter=web
