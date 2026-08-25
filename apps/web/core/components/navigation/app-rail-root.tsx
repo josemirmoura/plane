@@ -33,10 +33,9 @@ export const AppRailRoot = observer(() => {
 
   return (
     <div
-      className="z-[26] h-full flex-shrink-0 bg-canvas transition-all duration-300 ease-in-out"
+      className="z-[26] hidden h-full flex-shrink-0 bg-canvas transition-all duration-300 ease-in-out md:block"
       style={{
         width: railWidth,
-        display: "block",
       }}
     >
       <ContextMenu>
